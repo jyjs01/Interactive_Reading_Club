@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 // 메인컨테이너
@@ -15,6 +16,7 @@ const MainContainer = styled.div`
 // 로그인 컨테이너
 const LoginContainer = styled.div`
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 900px;
@@ -39,6 +41,7 @@ const Input = styled.input`
     width: 500px;
     background-color: #EDEDED;
     border-style: none;
+    border-radius: 10px;
     font-size: 15pt;
     padding: 10px;
 `;
@@ -55,8 +58,27 @@ const SubmitButton = styled.input`
     font-size: 15pt;
 `;
 
+// 회원가입 버튼
+const GotoSignUpButton = styled.button`
+    background-color: #426B1F;
+    border-radius: 10px;
+    color: white;
+    width: 227px;
+    height: 64px;
+    border: transparent;
+    cursor: pointer;
+    font-size: 15pt;
+`;
+
 
 function LoginForm() {
+
+    const navigate = useNavigate();
+
+    const GotoSignUp = () => {
+        navigate('/signup');
+    }
+
     return (
         <MainContainer>
             <LoginContainer>
@@ -65,6 +87,7 @@ function LoginForm() {
                     <Input type='password' name='password' placeholder='비밀번호 입력' />
                     <SubmitButton type='submit' value="로그인" />
                 </Form>
+                <GotoSignUpButton onClick={GotoSignUp}>회원가입</GotoSignUpButton>
             </LoginContainer>
         </MainContainer>
     )

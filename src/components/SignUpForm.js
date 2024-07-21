@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
 
 // 메인컨테이너
@@ -39,6 +41,7 @@ const Input = styled.input`
     width: 500px;
     background-color: #EDEDED;
     border-style: none;
+    border-radius: 10px;
     font-size: 15pt;
     padding: 10px;
 `;
@@ -57,17 +60,81 @@ const SubmitButton = styled.input`
 
 
 function SignUpForm() {
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [repassword, setRepassword] = useState('');
+    const [name, setName] = useState('');
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        const response = await fetch('http://localhost:4000/signup_process', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                email,
+                password,
+                repassword,
+                name
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            toast.success(result.message);
+            // 성공 시 리다이렉션
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 3000); // 3초 후 리다이렉션
+        } else {
+            toast.error(result.message);
+        }
+    };
+
     return (
         <MainContainer>
             <SignUpContainer>
-                <Form action='http://localhost:4000/signup_process' method='POST'>
-                    <Input type='text' name='email' placeholder='이메일 입력' />
-                    <Input type='password' name='password' placeholder='비밀번호 입력' />
-                    <Input type='password' name='repassword' placeholder='비밀번호 확인' />
-                    <Input type='text' name='name' placeholder='이름 입력' />
+                <Form onSubmit={handleSubmit}>
+
+                    <Input type='text'
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder='이메일 입력'
+                        required 
+                    />
+
+                    <Input type='password'
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder='비밀번호 입력'
+                        required 
+                    />
+
+                    <Input type='password'
+                        value={repassword}
+                        onChange={(e) => setRepassword(e.target.value)}
+                        placeholder='비밀번호 확인'
+                        required 
+                    />
+
+                    <Input type='text'
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder='이름 입력'
+                        required 
+                    />
+
                     <SubmitButton type='submit' value="회원가입" />
                 </Form>
             </SignUpContainer>
+            <ToastContainer 
+                position='top-center'
+                hideProgressBar={true}          
+            />
         </MainContainer>
     )
 }
