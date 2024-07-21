@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Foot = styled.footer`
-    position: absolute;
+    position: relative;
     bottom: 0;
     width: inherit;
     text-align: center;
@@ -16,7 +16,7 @@ function Footer() {
             © <a href='https://kr.123rf.com/profile_rawpixel'>rawpixel</a> <a href='https://www.123rf.com/free-images/'>123RF Free Images</a> 메인테마
             <p>© <a href='https://kr.123rf.com/profile_captainvector'>captainvector</a>, <a href='https://www.123rf.com/free-images/'>123RF Free Images</a> 메인로고</p>
             <p>© <a href='https://kr.123rf.com/profile_rawpixel'>rawpixel</a>, <a href='https://www.123rf.com/free-images/'>123RF Free Images</a> 소개 사진1</p>
-            <p>© <a href='https://kr.123rf.com/profile_rawpixel'>rawpixel</a>, <a href='https://www.123rf.com/free-images/'>123RF Free Images</a> 소개 사진2</p>
+            © <a href='https://kr.123rf.com/profile_rawpixel'>rawpixel</a>, <a href='https://www.123rf.com/free-images/'>123RF Free Images</a> 소개 사진2
         </Foot>
     )
 }
