@@ -8,7 +8,6 @@ const NavContainer = styled.nav`
     justify-content: space-between;
     width: inherit;
     height: 150px;
-    background-color: white;
 `;
 
 // 타이틀 컨테이너

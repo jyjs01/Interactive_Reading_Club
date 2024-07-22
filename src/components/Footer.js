@@ -7,7 +7,8 @@ const Foot = styled.footer`
     width: inherit;
     text-align: center;
     font-size: 15pt;
-    background-color: #6A6161;
+    background-color: #E1E1E1;
+    border-radius: 5px;
 `;
 
 function Footer() {
