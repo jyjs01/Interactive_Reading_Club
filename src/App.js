@@ -4,6 +4,7 @@ import NonLogin from './components/NonLogin';
 import LoginForm from './components/LoginForm';
 import SignUpForm from './components/SignUpForm';
 import MainPage from './components/MainPage';
+import MyPage from './components/MyPage';
 
 function App() {
 
@@ -15,6 +16,7 @@ function App() {
           <Route path="/login" element={<LoginForm />} />
           <Route path="/signup" element={<SignUpForm />} />
           <Route path="/main" element={<MainPage />} />
+          <Route path="/mypage" element={<MyPage />} />
         </Routes>
       </BrowserRouter>
     </div>
