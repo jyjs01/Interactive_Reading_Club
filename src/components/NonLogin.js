@@ -4,7 +4,7 @@ import NonLoginNav from './NonLoginNav';
 
 // 메인컨테이너
 const MainContainer = styled.div`
-  width: 100vw;
+  width: 100%;
 `;
 
 // 간단 소개 및 로그인 부분
