@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import Footer from './Footer';
 
 // 메인컨테이너
 const MainContainer = styled.div`
@@ -58,11 +57,10 @@ const SubmitButton = styled.input`
 
 
 function LoginForm() {
-
     return (
         <MainContainer>
             <LoginContainer>
-                <Form action='/login' method='POST'>
+                <Form action='http://localhost:4000/login_process' method='POST'>
                     <Input type='text' name='email' placeholder='이메일 입력' />
                     <Input type='password' name='password' placeholder='비밀번호 입력' />
                     <SubmitButton type='submit' value="로그인" />
