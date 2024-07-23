@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import NonLogin from './components/NonLogin';
 import LoginForm from './components/LoginForm';
+import SignUpForm from './components/SignUpForm';
 
 function App() {
 
@@ -11,6 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<NonLogin />} />
           <Route path="/login" element={<LoginForm />} />
+          <Route path="/signup" element={<SignUpForm />} />
         </Routes>
       </BrowserRouter>
     </div>
