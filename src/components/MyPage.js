@@ -44,36 +44,8 @@ const ProfileContainer = styled.div`
     box-shadow: 0 0 5px grey;
 `;
 
-// 프로필 컨테이너 왼쪽
-const LeftProfile = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-    height: 250px;
-`;
-
-// 프로필 사진
-const ProfilePicture = styled.img`
-    width: 151px;
-    height: 163px;
-    background-color: grey;
-`;
-
-// 프로필 변경
-const PictureChange = styled.button`
-    background-color: #426B1F;
-    border-radius: 10px;
-    color: white;
-    width: 190px;
-    height: 55px;
-    border: transparent;
-    cursor: pointer;
-    font-size: 15pt;
-`;
-
-// 프로필 컨테이너 오른쪽
-const RightProfile = styled.div`
+// 프로필 컨테이너
+const Profile = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -197,11 +169,7 @@ function MyPage() {
                 <Nav />
                 <FirstContainer>
                     <ProfileContainer>
-                        <LeftProfile>
-                            <ProfilePicture />
-                            <PictureChange>프로필 변경</PictureChange>
-                        </LeftProfile>
-                        <RightProfile>
+                        <Profile>
                             <Name>이름 : </Name>
                             <Email>이메일 : </Email>
                             <Form action='http://localhost:4000/changepassword' method='POST'>
@@ -209,7 +177,7 @@ function MyPage() {
                                 <ChangePassword type='password' name='change_password' placeholder='변경할 비밀번호 입력' />
                                 <SubmitButton type='submit' value='비밀번호 변경' />
                             </Form>
-                        </RightProfile>
+                        </Profile>
                     </ProfileContainer>
                 </FirstContainer>
                 <SecondContainer>
