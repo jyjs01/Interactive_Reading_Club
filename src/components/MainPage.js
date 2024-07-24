@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Nav from './Nav';
 import Footer from './Footer';
@@ -50,13 +51,6 @@ const ProfileContainer = styled.div`
     box-shadow: 0 0 5px grey;
 `;
 
-// 프로필 사진
-const ProfilePicture = styled.img`
-    width: 151px;
-    height: 163px;
-    background-color: grey;
-`;
-
 // 이름
 const Name = styled.div`
     font-family: "Inter";
@@ -64,7 +58,7 @@ const Name = styled.div`
 `;
 
 // 내 정보 가기
-const GotoMyPage = styled.button`
+const GotoMyPageButton = styled.button`
     background-color: #426B1F;
     border-radius: 10px;
     color: white;
@@ -217,6 +211,12 @@ const BookClubs = styled.div`
 
 function MainPage() {
 
+    const navigate = useNavigate();
+
+    const GotoMyPage = () => {
+        navigate('/mypage');
+    }
+
     return (
         <Center>
             <MainContainer>
@@ -224,9 +224,8 @@ function MainPage() {
                 <MainPicture src='./mainthema.jpg' alt='mainthema' />
                 <FirstContainer>
                     <ProfileContainer>
-                        <ProfilePicture></ProfilePicture>
                         <Name>~~~ 님</Name>
-                        <GotoMyPage>내 정보</GotoMyPage>
+                        <GotoMyPageButton onClick={GotoMyPage}>내 정보</GotoMyPageButton>
                         <Logout>로그아웃</Logout>
                     </ProfileContainer>
                     <BookContainer>
