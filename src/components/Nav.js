@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 // 네비게이션 컨테이너
@@ -45,9 +46,15 @@ const NotificationLogo = styled.img`
 
 function Nav() {
 
+    const navigate = useNavigate();
+
+    const GotoMain = () => {
+        navigate('/main');
+    }
+
     return (
         <NavContainer>
-            <TitleContainer>
+            <TitleContainer onClick={GotoMain}>
                 <Mainlogo src='/mainlogo.jpg' alt='mainlogo' />
                 <MainTitle>Interactive Reading Club</MainTitle>
             </TitleContainer>

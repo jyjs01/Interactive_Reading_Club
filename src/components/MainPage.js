@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../UserContext';
 import styled from 'styled-components';
 import Nav from './Nav';
 import Footer from './Footer';
@@ -70,7 +71,7 @@ const GotoMyPageButton = styled.button`
 `;
 
 // 로그아웃
-const Logout = styled.button`
+const LogoutButton = styled.button`
     background-color: #426B1F;
     border-radius: 10px;
     color: white;
@@ -217,6 +218,12 @@ function MainPage() {
         navigate('/mypage');
     }
 
+    const Logout = () => {
+        navigate('/login');
+    }
+
+    const { user } = useUser();
+
     return (
         <Center>
             <MainContainer>
@@ -224,9 +231,9 @@ function MainPage() {
                 <MainPicture src='./mainthema.jpg' alt='mainthema' />
                 <FirstContainer>
                     <ProfileContainer>
-                        <Name>~~~ 님</Name>
+                        <Name>{user._Name} 님</Name>
                         <GotoMyPageButton onClick={GotoMyPage}>내 정보</GotoMyPageButton>
-                        <Logout>로그아웃</Logout>
+                        <LogoutButton onClick={Logout}>로그아웃</LogoutButton>
                     </ProfileContainer>
                     <BookContainer>
                         <Book_UpContainer>
