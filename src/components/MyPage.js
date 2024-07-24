@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useUser } from '../UserContext';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
@@ -194,6 +195,8 @@ function MyPage() {
         }
     };
 
+    const { user } = useUser();
+
     return (
         <Center>
             <MainContainer>
@@ -201,8 +204,8 @@ function MyPage() {
                 <FirstContainer>
                     <ProfileContainer>
                         <Profile>
-                            <Name>이름 : </Name>
-                            <Email>이메일 : </Email>
+                            <Name>이름 : {user._Name}</Name>
+                            <Email>이메일 : {user.Email}</Email>
                             <Form onSubmit={handleSubmit}>
 
                                 <CurrentPassword 
