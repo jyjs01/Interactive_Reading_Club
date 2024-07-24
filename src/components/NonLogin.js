@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import NonLoginNav from './NonLoginNav';
 
@@ -30,7 +31,7 @@ const Introduce = styled.div`
 `;
 
 // 로그인하기
-const GotoLogin = styled.button`
+const GotoLoginButton = styled.button`
   background-color: #426B1F;
   border-radius: 10px;
   color: white;
@@ -84,6 +85,12 @@ const Explain2 = styled.div`
 `
 
 function NonLogin() {
+
+  const navigate = useNavigate();
+
+  const GotoLogin = () => {
+    navigate('/login');
+  }
   
   return (
     <MainContainer>
@@ -94,7 +101,7 @@ function NonLogin() {
           <p>책 속의 세계로 함께 떠나보세요!</p>
           <p>독서 클럽을 만들고 생각을 나눠보세요!</p>
         </Introduce>
-        <GotoLogin>Login</GotoLogin>
+        <GotoLoginButton onClick={GotoLogin}>Login</GotoLoginButton>
       </SmallSection>
 
       <PictureSection>
