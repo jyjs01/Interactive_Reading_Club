@@ -2,6 +2,7 @@ const http = require('http');
 const url = require('url');
 const Login = require('./api/LoginAPI');
 const SignUp = require('./api/SignUpAPI');
+const ChangePassword = require('./api/ChangePasswordAPI');
 
 // 서버 생성
 let app = http.createServer((request,response)=>{
@@ -19,9 +20,15 @@ let app = http.createServer((request,response)=>{
 
     if(pathname === '/login_process' && request.method === 'POST') Login(request, response);
     
+
+    // 회원가입
+
     if(pathname === '/signup_process' && request.method === 'POST') SignUp(request, response);
 
 
+    // 비밀번호 변경
+
+    if(pathname === '/change_password' && request.method === 'POST') ChangePassword(request, response);
 
     
 });

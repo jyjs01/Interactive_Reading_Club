@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
 import Nav from './Nav';
 import Footer from './Footer';
@@ -163,6 +165,35 @@ const BookClubs = styled.div`
 
 function MyPage() {
 
+    const [currentpassword, setCurrentPassword] = useState('');
+    const [changepassword, setChangePassword] = useState('');
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        const response = await fetch('http://localhost:4000/change_password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                currentpassword,
+                changepassword
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            toast.success(result.message);          
+            setTimeout(() => {
+                window.location.href = '/mypage';
+            }, 1500);
+        } else {
+            toast.error(result.message);
+        }
+    };
+
     return (
         <Center>
             <MainContainer>
@@ -172,9 +203,24 @@ function MyPage() {
                         <Profile>
                             <Name>이름 : </Name>
                             <Email>이메일 : </Email>
-                            <Form action='http://localhost:4000/changepassword' method='POST'>
-                                <CurrentPassword type='password' name='current_password' placeholder='현재 비밀번호 입력'/>
-                                <ChangePassword type='password' name='change_password' placeholder='변경할 비밀번호 입력' />
+                            <Form onSubmit={handleSubmit}>
+
+                                <CurrentPassword 
+                                    type='password' 
+                                    value={currentpassword}
+                                    onChange={(e) => setCurrentPassword(e.target.value)}
+                                    placeholder='현재 비밀번호 입력'
+                                    required
+                                />
+
+                                <ChangePassword 
+                                    type='password' 
+                                    value={changepassword}
+                                    onChange={(e) => setChangePassword(e.target.value)}
+                                    placeholder='변경할 비밀번호 입력' 
+                                    required
+                                />
+
                                 <SubmitButton type='submit' value='비밀번호 변경' />
                             </Form>
                         </Profile>
@@ -192,7 +238,10 @@ function MyPage() {
                 </SecondContainer>
                 <Footer />
             </MainContainer>
-
+            <ToastContainer 
+                position='top-center'
+                hideProgressBar={true}  
+            />
         </Center>
     )
 }
