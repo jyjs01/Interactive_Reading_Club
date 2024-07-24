@@ -219,7 +219,7 @@ function MainPage() {
     }
 
     const Logout = () => {
-        navigate('/login');
+        navigate('/login', { replace : true });
     }
 
     const { user } = useUser();
