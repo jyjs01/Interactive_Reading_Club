@@ -7,6 +7,7 @@ import SignUpForm from './components/SignUpForm';
 import MainPage from './components/MainPage';
 import MyPage from './components/MyPage';
 import SearchBookPage from './components/SearchBookPage';
+import BookDetailPage from './components/BookDetailPage';
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
             <Route path='/main' element={<MainPage />} />
             <Route path="/mypage" element={<MyPage />} />
             <Route path='/searchbook' element={<SearchBookPage />} />
+            <Route path="/book/:id" element={<BookDetailPage />} />
           </Routes>
         </Router>
       </UserProvider>

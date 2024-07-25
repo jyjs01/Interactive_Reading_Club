@@ -222,6 +222,10 @@ function MainPage() {
         navigate('/login', { replace : true });
     }
 
+    const GotoSearchBook = () => {
+        navigate('/searchbook');
+    }
+
     const { user } = useUser();
 
     return (
@@ -238,7 +242,7 @@ function MainPage() {
                     <BookContainer>
                         <Book_UpContainer>
                             <Book_Title>최근 소개된 책들</Book_Title>
-                            <SearchBook>책 검색</SearchBook>
+                            <SearchBook onClick={GotoSearchBook}>책 검색</SearchBook>
                         </Book_UpContainer>
                         <Book_DownContainer>
                             <Books></Books>
