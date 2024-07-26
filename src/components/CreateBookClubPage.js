@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useUser } from '../UserContext';
 import styled from 'styled-components';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useUser } from '../UserContext'; 
 import Nav from './Nav';
 import Footer from './Footer';
 
@@ -130,6 +132,44 @@ const SubmitButton = styled.input`
 
 function CreateBookClubPage() {
 
+    const navigate = useNavigate();
+    const [bookclub_name, setBookclub_name] = useState('');
+    const [bookclub_description, setBookclub_description] = useState('');
+    const [bookclub_start, setBookclub_start] = useState('');
+    const [bookclub_end, setBookclub_end] = useState('');
+    const { user } = useUser();
+
+    const handleCreateBookClub = async (event) => {
+        event.preventDefault();
+
+        try {
+            const response = await fetch('http://localhost:4000/create_bookclub', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({    
+                    user_id: user.UserID,                 
+                    bookclub_name, 
+                    bookclub_description,
+                    bookclub_start,
+                    bookclub_end 
+                }),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                navigate('/main'); // 
+            } else {
+                toast.error(result.message);
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error('오류가 발생했습니다.');
+        }
+    };
+
     return (
         <Center>
             <MainContainer>
@@ -139,17 +179,57 @@ function CreateBookClubPage() {
                     <BookClubContainer>
                         <BookClub_UpContainer><Title>독서 클럽 생성</Title></BookClub_UpContainer>
                         <BookClub_DownContainer>
-                            <Form>
-                                <Line>독서 클럽 이름 : <Input type='text' name='bookclub_name'/></Line>
-                                <Line>독서 클럽 설명 : <Description name='bookclub_description'/></Line>
-                                <Line id='start'>독서 클럽 시작일 : <Input type='date'/></Line>
-                                <Line id='end'>독서 클럽 종료일 : <Input type='date'/></Line>
+                            <Form onSubmit={handleCreateBookClub}>
+
+                                <Line>독서 클럽 이름 : 
+                                    <Input 
+                                        type='text' 
+                                        name='bookclub_name'
+                                        value={bookclub_name}
+                                        onChange={(e) => setBookclub_name(e.target.value)}
+                                        required
+                                    />
+                                </Line>
+
+                                <Line>독서 클럽 설명 : 
+                                    <Description 
+                                        name='bookclub_description'
+                                        value={bookclub_description}
+                                        onChange={(e) => setBookclub_description(e.target.value)}
+                                        required
+                                    />
+                                </Line>
+
+                                <Line id='start'>독서 클럽 시작일 : 
+                                    <Input 
+                                        type='date' 
+                                        name='bookclub_start'
+                                        value={bookclub_start}
+                                        onChange={(e) => setBookclub_start(e.target.value)}
+                                        required
+                                    />
+                                </Line>
+                                
+                                <Line id='end'>독서 클럽 종료일 : 
+                                    <Input 
+                                        type='date' 
+                                        name='bookclub_end'
+                                        value={bookclub_end}
+                                        onChange={(e) => setBookclub_end(e.target.value)}
+                                        required
+                                    />
+                                </Line>
+
                                 <SubmitButton type='submit' value='생성' />
                             </Form>
                         </BookClub_DownContainer>
                     </BookClubContainer>
                 </FirstContainer>
                 <Footer />
+                <ToastContainer 
+                    position='top-center'
+                    hideProgressBar={true}          
+                />
             </MainContainer>
         </Center>
     )

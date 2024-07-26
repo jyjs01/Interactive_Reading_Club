@@ -3,6 +3,7 @@ const url = require('url');
 const Login = require('./api/LoginAPI');
 const SignUp = require('./api/SignUpAPI');
 const ChangePassword = require('./api/ChangePasswordAPI');
+const CreateBookClub = require('./api/CreateBookClubAPI');
 
 // 서버 생성
 let app = http.createServer((request,response)=>{
@@ -31,6 +32,10 @@ let app = http.createServer((request,response)=>{
     if(pathname === '/change_password' && request.method === 'POST') ChangePassword(request, response);
 
     
+    // 독서 클럽 생성
+
+    if(pathname === '/create_bookclub' && request.method === 'POST') CreateBookClub(request, response);
+
 });
 
 
