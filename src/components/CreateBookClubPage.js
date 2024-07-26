@@ -90,7 +90,7 @@ const Line = styled.div`
     font-size: 15pt;
     font-weight: 570;
     font-family: "Inter";
-    width: ${(props) => props.id === 'start' ? '500px' : '980px'};
+    width: ${(props) => props.id === 'start' || props.id === 'end' ? '500px' : '980px'};
 `;
 
 // 입력
@@ -143,6 +143,7 @@ function CreateBookClubPage() {
                                 <Line>독서 클럽 이름 : <Input type='text' name='bookclub_name'/></Line>
                                 <Line>독서 클럽 설명 : <Description name='bookclub_description'/></Line>
                                 <Line id='start'>독서 클럽 시작일 : <Input type='date'/></Line>
+                                <Line id='end'>독서 클럽 종료일 : <Input type='date'/></Line>
                                 <SubmitButton type='submit' value='생성' />
                             </Form>
                         </BookClub_DownContainer>
