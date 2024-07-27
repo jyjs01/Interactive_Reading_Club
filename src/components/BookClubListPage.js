@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Nav from './Nav';
 
@@ -74,19 +73,36 @@ const Description = styled.h3`
 
 function BookClubListPage() {
 
+    const [bookclubs, setBookclubs] = useState([]);
+
+    useEffect(() => {
+        fetch('http://localhost:4000/arrange_bookclub') // 백엔드 API 엔드포인트
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    setBookclubs(data.bookclubs);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching book clubs:', error);
+            });
+    }, []);
+
     return (
         <Center>
             <MainContainer>
                 <Nav />
                 <BookClubContainer>
                     <BookClubList>
-                        <BookClubItem>
-                            <BookPicture />
-                            <BookClubInfo>
-                                <ClubName>이름 : </ClubName>
-                                <Description>설명 : </Description>
-                            </BookClubInfo>
-                        </BookClubItem>
+                        {bookclubs.map((club) => (
+                            <BookClubItem key={club.ClubID}>
+                                <BookPicture src={club.ImageUrl} alt="Book" />
+                                <BookClubInfo>
+                                    <ClubName>이름: {club.ClubName}</ClubName>
+                                    <Description>설명: {club._Description}</Description>
+                                </BookClubInfo>
+                            </BookClubItem>
+                        ))}
                     </BookClubList>
                 </BookClubContainer>
             </MainContainer>
