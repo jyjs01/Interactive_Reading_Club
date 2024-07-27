@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../UserContext';
 import styled from 'styled-components';
@@ -134,6 +134,8 @@ const Books = styled.div`
     width: 230px;
     height: 250px;
     background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 5px grey;
 `;
 
 // 두번째 컨테이너
@@ -205,10 +207,36 @@ const BookClubs_List = styled.div`
 
 // 독서 클럽
 const BookClubs = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 230px;
     height: 250px;
     background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 5px grey;
 `;
+
+// 책 사진
+const BookPicture = styled.img`
+    width: 150px;
+    height: 180px;
+`;
+
+// ClubName
+const ClubName = styled.h2`
+    font-family: "Inter";
+`;
+
+
+function groupItems(items, groupSize){
+    const result = [];
+    for (let i = 0; i < items.length; i += groupSize) {
+        result.push(items.slice(i, i + groupSize));
+    }
+    return result;
+};
+
 
 function MainPage() {
 
@@ -235,6 +263,28 @@ function MainPage() {
     }
 
     const { user } = useUser();
+
+
+    const [bookclubs, setBookclubs] = useState([]);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        fetch('http://localhost:4000/mainarrange_bookclub')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    setBookclubs(data.bookclubs);
+                    setError(null); // Clear previous errors
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching book clubs:', error);
+                setError('Failed to fetch bookclubs. Please try again.');
+            });
+    }, []);
+
+    const groupedBookclubs = groupItems(bookclubs, 4);  
+    const visibleGroups = groupedBookclubs.slice(0, 2);
 
     return (
         <Center>
@@ -268,18 +318,16 @@ function MainPage() {
                             <BookClubButton onClick={GotoBookClubList}>목록 더보기</BookClubButton>
                         </BookClub_UpContainer>
                         <BookClub_DownContainer>
-                            <BookClubs_List>
-                                <BookClubs></BookClubs>
-                                <BookClubs></BookClubs>
-                                <BookClubs></BookClubs>
-                                <BookClubs></BookClubs>
-                            </BookClubs_List>
-                            <BookClubs_List>
-                                <BookClubs></BookClubs>
-                                <BookClubs></BookClubs>
-                                <BookClubs></BookClubs>
-                                <BookClubs></BookClubs>
-                            </BookClubs_List>
+                            {visibleGroups.map((group, index) => (
+                                <BookClubs_List key={index}>
+                                    {group.map(club => (
+                                        <BookClubs key={club.ClubID}>
+                                            <BookPicture src={club.ImageUrl} alt="Book" />
+                                            <ClubName>{club.ClubName}</ClubName>
+                                        </BookClubs>
+                                    ))}
+                                </BookClubs_List>
+                            ))}
                         </BookClub_DownContainer>
                     </BookClubContainer>
                 </SecondContainer>

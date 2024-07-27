@@ -1,6 +1,5 @@
 const DB = require('../database');
 const qs = require('qs');
-const sanitize = require('sanitize-html');
 
 function BookClubListAPI(request, response) {
     
