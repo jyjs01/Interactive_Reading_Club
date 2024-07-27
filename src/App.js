@@ -9,6 +9,7 @@ import MyPage from './components/MyPage';
 import CreateBookClubPage from './components/CreateBookClubPage';
 import SearchBookPage from './components/SearchBookPage';
 import BookDetailPage from './components/BookDetailPage';
+import BookClubListPage from './components/BookClubListPage';
 
 function App() {
 
@@ -25,6 +26,7 @@ function App() {
             <Route path="/create_bookclub" element={<CreateBookClubPage />} />
             <Route path='/searchbook' element={<SearchBookPage />} />
             <Route path="/book/:id" element={<BookDetailPage />} />
+            <Route path='/bookclublist' element={<BookClubListPage />} />
           </Routes>
         </Router>
       </UserProvider>
