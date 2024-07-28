@@ -4,38 +4,43 @@ const sanitize = require('sanitize-html');
 
 function WithdrawBookClubAPI(request, response) {
 
-    console.log('WithdrawBookClubAPI called');
-    
     let body = "";
 
-    request.on("data", data => {
+    request.on("data", data=>{
         body += data;
-        console.log('Receiving data:', data);
     });
 
-    request.on("end", () => {
-        console.log('Data received:', body);
+    request.on("end", ()=>{
 
         let getID = qs.parse(body);
-        console.log('Parsed data:', getID);
 
-        let getClubID = sanitize(getID.club_id);
-        let getUserID = sanitize(getID.user_id);
+        let getClubID = sanitize(getID.clubid);
+        let getUserID = sanitize(getID.userid);
 
-        console.log('Sanitized data - ClubID:', getClubID, 'UserID:', getUserID);
 
-        DB.query('DELETE FROM BookClubMembers WHERE ClubID = ? AND UserID = ?', [getClubID, getUserID], (error, results) => {
+        DB.query('DELETE FROM BookClubMembers WHERE ClubID = ? AND UserID = ?', [getClubID, getUserID], (error, results_delmember)=>{
             if (error) {
-                console.error('Database error:', error);
+                console.log(error);
                 response.writeHead(500, { 'Content-Type': 'application/json' });
                 response.end(JSON.stringify({ success: false, message: 'Database error' }));
                 return;
             }
 
-            console.log('Delete operation results:', results);
-            response.writeHead(200, { 'Content-Type': 'application/json' });
-            response.end(JSON.stringify({ success: true, message: '처리되었습니다.' }));
-        });
+            DB.query('DELETE FROM ReadingSchedule WHERE ClubID = ? AND UserID = ?', [getClubID, getUserID], (error, results_delete)=>{
+                if (error) {
+                    console.log(error);
+                    response.writeHead(500, { 'Content-Type': 'application/json' });
+                    response.end(JSON.stringify({ success: false, message: 'Database error' }));
+                    return;
+                }
+
+                
+
+                response.writeHead(200, { 'Content-Type': 'application/json' });
+                response.end(JSON.stringify({ success: true, message: '처리되었습니다.' }));
+            })
+
+        })
     });
 
 }
