@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
+import { useNavigate } from 'react-router-dom';
 import { useUser } from '../UserContext'; 
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -296,6 +297,12 @@ function ManageBookClub() {
         }
     }
 
+    const navigate = useNavigate();
+
+    const GotoEdit = () => {
+        navigate('/edit_bookclub');
+    }
+
     return (
         <Center>
             <MainContainer>
@@ -316,7 +323,7 @@ function ManageBookClub() {
                                             <Description>설명: {club._Description}</Description>
                                         </BookClubInfo>
                                         <ButtonContainer>
-                                            <Button>수정</Button>
+                                            <Button onClick={GotoEdit}>수정</Button>
                                             <Button onClick={() => setSelectedBookclub(club)}>탈퇴</Button>
                                         </ButtonContainer>
                                     </BookClubItem>
