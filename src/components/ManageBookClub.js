@@ -35,7 +35,7 @@ const FirstContainer = styled.div`
     justify-content: space-around;
     align-items: center;
     width: inherit;
-    height: 900px;
+    height: 1200px;
     margin-bottom: 50px;
 `;
 
@@ -45,7 +45,7 @@ const BookClubContainer = styled.div`
     flex-direction: column;
     justify-content: space-around;
     width: 1250px;
-    height: 700px;
+    height: 900px;
     border: transparent;
     border-radius: 10px;
     padding: 5px;
@@ -73,7 +73,7 @@ const BookClub_DownContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    height: 600px;
+    height: 700px;
 `;
 
 // 독서 클럽 리스트
@@ -91,7 +91,7 @@ const BookClubItem = styled.li`
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    height: 250px;
+    height: 200px;
 `;
 
 // 책 사진
@@ -110,13 +110,13 @@ const BookClubInfo = styled.div`
 // ClubName
 const ClubName = styled.h2`
     font-family: "Inter";
-    margin-left: 20px;
+    margin-left: ${(props) => props.id === 'modal' ? '0px' : '20px'};
 `;
 
 // Description
 const Description = styled.h3`
     font-family: "Inter";
-    margin-left: 20px;
+    margin-left: ${(props) => props.id === 'modal' ? '0px' : '20px'};
     word-wrap: break-word;
 `;
 
@@ -146,7 +146,155 @@ const Button = styled.button`
     font-size: 15pt;
 `;
 
+// 페이지네이션 컨테이너
+const PaginationContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+`;
+
+// 페이지네이션 버튼
+const PaginationButton = styled.button`
+    background-color: #D9D9D9;
+    border: none;
+    border-radius: 5px;
+    margin: 0 5px;
+    padding: 10px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #ccc;
+    }
+`;
+
+// 모달 스타일
+const customStyles = {
+    overlay: {
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        zIndex: 1000
+    },
+    content: {
+        backgroundColor: 'white',
+        border: 'none',
+        borderRadius: '10px',
+        padding: '20px',
+        width: '600px',
+        maxHeight: '80%',
+        overflowY: 'auto',
+        margin: 'auto',
+        boxShadow: '0 0 5px black'
+    }
+};
+
+// 모달 내용
+const ModalSection = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: inherit;
+    align-items: center;
+    justify-content: center;
+`;
+
+// 경고메시지
+const Warning = styled.h1`
+    font-family: "Inter";
+    margin-top: 50px;
+`;
+
+// 버튼 컨테이너
+const ModalButtonContainer = styled.div`
+    display: flex;
+    justify-content: space-around;
+    width: inherit;
+    position: absolute;
+    bottom: 20px;
+`;
+
+// 모달 버튼
+const ModalButton = styled.button`
+    background-color: #426B1F;
+    border-radius: 10px;
+    color: white;
+    width: 190px;
+    height: 50px;
+    border: transparent;
+    cursor: pointer;
+    font-size: 15pt;
+`;
+
+
 function ManageBookClub() {
+
+    const [bookclubs, setBookclubs] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [error, setError] = useState(null);
+    const bookclubsPerPage = 3;
+    const [selectedBookclub, setSelectedBookclub] = useState(null);
+    const [dependency, setDependency] = useState(0);
+    const { user } = useUser();
+
+    useEffect(() => {
+        fetch('http://localhost:4000/arrange_mybookclub', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                user_id: user.UserID,                 
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    setBookclubs(data.bookclubs);
+                    setError(null); // Clear previous errors
+                    setCurrentPage(1);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching book clubs:', error);
+                setError('Failed to fetch bookclubs. Please try again.');
+            });
+    }, [dependency]);
+
+    const indexOfLastBook = currentPage * bookclubsPerPage;
+    const indexOfFirstBook = indexOfLastBook - bookclubsPerPage;
+    const currentBookClubs = bookclubs.slice(indexOfFirstBook, indexOfLastBook);
+    const totalPages = Math.ceil(bookclubs.length / bookclubsPerPage);
+
+    const handleCloseModal = () => {
+        setSelectedBookclub(null);
+    };
+
+    const handleWithdrawBookClub = async (event) => {
+        event.preventDefault();
+
+        try {
+            const response = await fetch('http://localhost:4000/withdraw_bookclub', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({    
+                    user_id: user.UserID,                 
+                    club_id: selectedBookclub.ClubID
+                }),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                setDependency(prev => prev + 1);
+                handleCloseModal();
+                toast.success(result.message);
+            } else {
+                toast.error(result.message);
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error('오류가 발생했습니다.');
+        }
+    }
 
     return (
         <Center>
@@ -160,23 +308,61 @@ function ManageBookClub() {
                         </BookClub_UpContainer>
                         <BookClub_DownContainer>
                             <BookClubList>
-                                <BookClubItem>
-                                    <BookPicture />
-                                    <BookClubInfo>
-                                        <ClubName>이름 : </ClubName>
-                                        <Description>설명 : </Description>
-                                        <Date>일정 : </Date>
-                                    </BookClubInfo>
-                                    <ButtonContainer>
-                                        <Button>수정</Button>
-                                        <Button>탈퇴</Button>
-                                    </ButtonContainer>
-                                </BookClubItem>
+                                {currentBookClubs.map((club) => (
+                                    <BookClubItem key={club.ClubID}>
+                                        <BookPicture src={club.ImageUrl} alt="Book" />
+                                        <BookClubInfo>
+                                            <ClubName>이름: {club.ClubName}</ClubName>
+                                            <Description>설명: {club._Description}</Description>
+                                        </BookClubInfo>
+                                        <ButtonContainer>
+                                            <Button>수정</Button>
+                                            <Button onClick={() => setSelectedBookclub(club)}>탈퇴</Button>
+                                        </ButtonContainer>
+                                    </BookClubItem>
+                                ))}
                             </BookClubList>
                         </BookClub_DownContainer>
+                        <PaginationContainer>
+                            {[...Array(totalPages)].map((_, index) => (
+                                <PaginationButton
+                                    key={index + 1}
+                                    onClick={() => setCurrentPage(index + 1)}
+                                    disabled={currentPage === index + 1}
+                                >
+                                    {index + 1}
+                                </PaginationButton>
+                            ))}
+                        </PaginationContainer>
                     </BookClubContainer>
                 </FirstContainer>
                 <Footer />
+
+                <Modal
+                    isOpen={!!selectedBookclub}
+                    onRequestClose={handleCloseModal}
+                    style={customStyles}
+                    contentLabel="Book Club Details"
+                >
+                    {selectedBookclub && (
+                        <>
+                            <ModalSection>
+                                <BookPicture src={selectedBookclub.ImageUrl} alt="Book" />
+                                <ClubName id='modal'>{selectedBookclub.ClubName}</ClubName>
+                                <Description id='modal'>{selectedBookclub._Description}</Description>
+                                <Warning>탈퇴하시겠습니까?</Warning>
+                                <ModalButtonContainer>
+                                    <ModalButton onClick={handleWithdrawBookClub}>탈퇴</ModalButton>
+                                    <ModalButton onClick={handleCloseModal}>닫기</ModalButton>
+                                </ModalButtonContainer>
+                            </ModalSection>
+                        </>
+                    )}
+                </Modal>
+                <ToastContainer 
+                    position='top-center'
+                    hideProgressBar={true}          
+                />
             </MainContainer>
         </Center>
     )

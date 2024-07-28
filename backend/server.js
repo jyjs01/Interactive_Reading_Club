@@ -5,7 +5,9 @@ const SignUp = require('./api/SignUpAPI');
 const ChangePassword = require('./api/ChangePasswordAPI');
 const CreateBookClub = require('./api/CreateBookClubAPI');
 const ArrangeBookClub = require('./api/BookClubListAPI');
+const ArrangeMyBookClub = require('./api/MyBookClubListAPI');
 const JoinBookClub = require('./api/JoinBookClubAPI');
+const WithdrawBookClub = require('./api/WithdrawBookClubAPI');
 
 // 서버 생성
 let app = http.createServer((request,response)=>{
@@ -44,10 +46,20 @@ let app = http.createServer((request,response)=>{
     if((pathname === '/arrange_bookclub' || pathname === '/mainarrange_bookclub') && request.method === 'GET') 
         ArrangeBookClub(request, response);
 
+    if(pathname === '/arrange_mybookclub' && request.method === 'POST') ArrangeMyBookClub(request, response);
+
 
     // 독서 클럽 참여
 
     if(pathname === '/join_bookclub' && request.method === 'POST') JoinBookClub(request, response);
+
+    
+    // 독서 클럽 탈퇴
+
+    if(pathname === '/withdraw_bookclub' && request.method === 'POST') WithdrawBookClub(request, response);
+
+
+
 });
 
 

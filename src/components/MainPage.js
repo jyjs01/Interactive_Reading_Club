@@ -262,6 +262,10 @@ function MainPage() {
         navigate('/bookclublist');
     }
 
+    const GotoManageBookClub = () => {
+        navigate('/manage_bookclub');
+    }
+
     const { user } = useUser();
 
 
@@ -314,7 +318,7 @@ function MainPage() {
                         <BookClub_UpContainer>
                             <BookClub_Title>독서 클럽 목록</BookClub_Title>
                             <BookClubButton onClick={GotoCreateBookClub}>독서 클럽 생성</BookClubButton>
-                            <BookClubButton>독서 클럽 관리</BookClubButton>
+                            <BookClubButton onClick={GotoManageBookClub}>독서 클럽 관리</BookClubButton>
                             <BookClubButton onClick={GotoBookClubList}>목록 더보기</BookClubButton>
                         </BookClub_UpContainer>
                         <BookClub_DownContainer>
