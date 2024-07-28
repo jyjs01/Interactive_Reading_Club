@@ -66,7 +66,7 @@ function CreateBookClub(request, response) {
                     }
 
                     // Schedule 생성                  
-                    CreateSchedule(getUserID, getStart, getEnd);
+                    CreateSchedule(getUserID, getStart, getEnd, ClubID);
 
 
                     // 구성원으로 설정

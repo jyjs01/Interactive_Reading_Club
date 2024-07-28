@@ -1,6 +1,6 @@
 const DB = require('../database');
 
-function ReadingScheduleAPI(UserID, Start, End) {
+function ReadingScheduleAPI(UserID, Start, End, ClubID) {
 
     let ScheduleID = 0;
 
@@ -17,8 +17,8 @@ function ReadingScheduleAPI(UserID, Start, End) {
 
         // ReadingSchedule 생성
 
-        DB.query('INSERT INTO ReadingSchedule (ScheduleID, UserID, StartDate, EndDate) VALUES (?, ?, ?, ?)'
-            , [ScheduleID, UserID, Start, End], (error, results_create)=>{
+        DB.query('INSERT INTO ReadingSchedule (ScheduleID, UserID, StartDate, EndDate, ClubID) VALUES (?, ?, ?, ?, ?)'
+            , [ScheduleID, UserID, Start, End, ClubID], (error, results_create)=>{
             if (error) {
                 console.log(error);
                 return;
