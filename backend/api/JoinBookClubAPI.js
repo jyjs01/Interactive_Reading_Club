@@ -33,7 +33,7 @@ function JoinBookClubAPI(request, response) {
 
             if (results_select.length === 0) {
 
-                DB.query("INSERT INTO BookClubMembers VALUES (?, ?)", [getClubID, getUserID], (error, results)=>{
+                DB.query("INSERT INTO BookClubMembers VALUES (?, ?)", [getClubID, getUserID], (error, results_m)=>{
                     if (error) {
                         console.log(error);
                         response.writeHead(500, { 'Content-Type': 'application/json' });

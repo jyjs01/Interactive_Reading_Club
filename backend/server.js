@@ -8,6 +8,7 @@ const ArrangeBookClub = require('./api/BookClubListAPI');
 const ArrangeMyBookClub = require('./api/MyBookClubListAPI');
 const JoinBookClub = require('./api/JoinBookClubAPI');
 const WithdrawBookClub = require('./api/WithdrawBookClubAPI');
+const FetchDate = require('./api/FetchDate');
 
 // 서버 생성
 let app = http.createServer((request,response)=>{
@@ -48,6 +49,9 @@ let app = http.createServer((request,response)=>{
 
     if(pathname === '/arrange_mybookclub' && request.method === 'POST') ArrangeMyBookClub(request, response);
 
+    // 독서 클럽 일정 가져오기
+
+    if(pathname === '/fetch_date' && request.method === 'POST') FetchDate(request, response);
 
     // 독서 클럽 참여
 
