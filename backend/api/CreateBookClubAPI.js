@@ -69,8 +69,20 @@ function CreateBookClub(request, response) {
                     CreateSchedule(getUserID, getStart, getEnd);
 
 
-                    response.writeHead(200, { 'Content-Type': 'application/json' });
-                    response.end(JSON.stringify({ success: true }));
+                    // 구성원으로 설정
+
+                    DB.query('INSERT INTO BookClubMembers VALUES (?, ?)', [ClubID, getUserID], (error, results_member)=>{
+                        if (error) {
+                            console.log(error);
+                            response.writeHead(500, { 'Content-Type': 'application/json' });
+                            response.end(JSON.stringify({ success: false, message: 'Database error' }));
+                            return;
+                        }
+
+                        response.writeHead(200, { 'Content-Type': 'application/json' });
+                        response.end(JSON.stringify({ success: true }));
+                    })
+
                 });
             });
         });
