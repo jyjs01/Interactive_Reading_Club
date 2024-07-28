@@ -57,7 +57,7 @@ function CreateBookClub(request, response) {
 
                 // 독서 클럽 생성
 
-                DB.query('INSERT INTO BookClub VALUES (?, ?, ?, ?)', [ClubID, getName, getDescription, getUserID], (error, results_create)=>{
+                DB.query('INSERT INTO BookClub (ClubID, ClubName, _Description, OwnerID) VALUES (?, ?, ?, ?)', [ClubID, getName, getDescription, getUserID], (error, results_create)=>{
                     if (error) {
                         console.log(error);
                         response.writeHead(500, { 'Content-Type': 'application/json' });
