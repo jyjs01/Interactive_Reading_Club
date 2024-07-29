@@ -160,7 +160,7 @@ function EditBookClubPage() {
             const result = await response.json();
 
             if (result.success) {
-                navigate('/main');
+                navigate('/manage_bookclub');
             } else {
                 toast.error(result.message);
             }

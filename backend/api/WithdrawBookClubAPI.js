@@ -14,8 +14,8 @@ function WithdrawBookClubAPI(request, response) {
 
         let getID = qs.parse(body);
 
-        let getClubID = sanitize(getID.clubid);
-        let getUserID = sanitize(getID.userid);
+        let getClubID = sanitize(getID.club_id);
+        let getUserID = sanitize(getID.user_id);
 
 
         DB.query('DELETE FROM BookClubMembers WHERE ClubID = ? AND UserID = ?', [getClubID, getUserID], (error, results_delmember)=>{
@@ -26,7 +26,7 @@ function WithdrawBookClubAPI(request, response) {
                 return;
             }
 
-            DB.query('DELETE FROM ReadingSchedule WHERE ClubID = ? AND UserID = ?', [getClubID, getUserID], (error, results_delete)=>{
+            DB.query('DELETE FROM ReadingSchedule WHERE ClubID = ?', [getClubID], (error, results_delete)=>{
                 if (error) {
                     console.log(error);
                     response.writeHead(500, { 'Content-Type': 'application/json' });
