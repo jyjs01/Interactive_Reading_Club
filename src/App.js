@@ -14,6 +14,7 @@ import BookClubListPage from './components/BookClubListPage';
 import ManageBookClub from './components/ManageBookClub';
 import BookClubPage from './components/BookClubPage';
 import Post from './components/Post';
+import WritePostPage from './components/WritePostPage';
 
 function App() {
 
@@ -35,6 +36,7 @@ function App() {
             <Route path='/manage_bookclub' element={<ManageBookClub />} />
             <Route path='/bookclub' element={<BookClubPage />} />
             <Route path='/post' element={<Post />} />
+            <Route path='/write_post' element={<WritePostPage />} />
           </Routes>
         </Router>
       </UserProvider>
