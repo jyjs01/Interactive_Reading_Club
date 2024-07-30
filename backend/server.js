@@ -10,6 +10,7 @@ const JoinBookClub = require('./api/JoinBookClubAPI');
 const WithdrawBookClub = require('./api/WithdrawBookClubAPI');
 const EditBookClub = require('./api/EditBookClubAPI');
 const FetchDate = require('./api/FetchDate');
+const FetchPost = require('./api/FetchPostAPI');
 
 
 // 서버 생성
@@ -68,6 +69,11 @@ let app = http.createServer((request,response)=>{
     // 독서 클럽 수정
 
     if(pathname === '/edit_bookclub' && request.method === 'POST') EditBookClub(request, response);
+
+
+    // 게시글 목록
+
+    if(pathname === '/arrange_post' && request.method === 'GET') FetchPost(response);
 
 });
 

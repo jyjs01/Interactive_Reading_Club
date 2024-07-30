@@ -130,10 +130,64 @@ const Button = styled.button`
     font-size: 15pt;
 `;
 
+// 페이지네이션 컨테이너
+const PaginationContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+`;
+
+// 페이지네이션 버튼
+const PaginationButton = styled.button`
+    background-color: #D9D9D9;
+    border: none;
+    border-radius: 5px;
+    margin: 0 5px;
+    padding: 10px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #ccc;
+    }
+`;
+
 function BookClubPage() {
 
-    const navigate = useNavigate();
+    const [posts, setPosts] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [error, setError] = useState(null);
+    const postsPerPage = 6;
+    const [selectedPost, setSelectedPost] = useState(null);
+    const { user } = useUser();
 
+    useEffect(() => {
+        fetch('http://localhost:4000/arrange_post')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    setPosts(data.posts);
+                    setError(null); // Clear previous errors
+                    setCurrentPage(1);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching Posts:', error);
+                setError('Failed to fetch Posts. Please try again.');
+            });
+    }, []);
+
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+    const totalPages = Math.ceil(posts.length / postsPerPage);
+
+    const handlePostClick = (post) => {
+        setSelectedPost(post);
+    }
+
+
+
+    const navigate = useNavigate();
     const GotoPost = () => { navigate('/post'); };
 
     return (
@@ -150,14 +204,27 @@ function BookClubPage() {
                                     <Th>작성일자</Th>
                                 </Tr>
                             </thead>
-                            <Post>
-                                <Tr height='post' color='post' shadow='post' onClick={GotoPost}>
-                                    <Section>셀 1</Section>
-                                    <Section>셀 2</Section>
-                                    <Section>셀 3</Section>
-                                </Tr>
-                            </Post>
+                            {currentPosts.map((post) => (
+                                <Post>
+                                    <Tr key={post.PostID} height='post' color='post' shadow='post' onClick={GotoPost}>
+                                        <Section>{post.Title}</Section>
+                                        <Section>{post.UserID}</Section>
+                                        <Section>{post.CreatedAt}</Section>
+                                    </Tr>
+                                </Post>
+                            ))}
                         </Table>
+                        <PaginationContainer>
+                            {[...Array(totalPages)].map((_, index) => (
+                                <PaginationButton
+                                    key={index + 1}
+                                    onClick={() => setCurrentPage(index + 1)}
+                                    disabled={currentPage === index + 1}
+                                >
+                                    {index + 1}
+                                </PaginationButton>
+                            ))}
+                        </PaginationContainer>
                     </PostContainer>
                     <RightContainer>
                         <BookClubInfoContainer></BookClubInfoContainer>
