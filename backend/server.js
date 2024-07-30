@@ -11,6 +11,8 @@ const WithdrawBookClub = require('./api/WithdrawBookClubAPI');
 const EditBookClub = require('./api/EditBookClubAPI');
 const FetchDate = require('./api/FetchDate');
 const FetchPost = require('./api/FetchPostAPI');
+const WritePost = require('./api/WritePostAPI');
+const FetchWritter = require('./api/FetchWritterAPI');
 
 
 // 서버 생성
@@ -73,7 +75,17 @@ let app = http.createServer((request,response)=>{
 
     // 게시글 목록
 
-    if(pathname === '/arrange_post' && request.method === 'GET') FetchPost(response);
+    if(pathname === '/arrange_post' && request.method === 'POST') FetchPost(request, response);
+
+
+    // 게시글 작성
+
+    if(pathname === '/write_post' && request.method === 'POST') WritePost(request, response);
+
+
+    // 게시글 작성자 불러오기
+
+    if(pathname === '/fetch_postwritter' && request.method === 'POST') FetchWritter(request, response);
 
 });
 

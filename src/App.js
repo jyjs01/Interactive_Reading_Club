@@ -29,13 +29,13 @@ function App() {
             <Route path='/main' element={<MainPage />} />
             <Route path="/mypage" element={<MyPage />} />
             <Route path="/create_bookclub" element={<CreateBookClubPage />} />
-            <Route path="/edit_bookclub" element={<EditBookClubPage />} />
+            <Route path="/edit_bookclub/:ClubName" element={<EditBookClubPage />} />
             <Route path='/searchbook' element={<SearchBookPage />} />
             <Route path="/book/:id" element={<BookDetailPage />} />
             <Route path='/bookclublist' element={<BookClubListPage />} />
             <Route path='/manage_bookclub' element={<ManageBookClub />} />
-            <Route path='/bookclub' element={<BookClubPage />} />
-            <Route path='/post' element={<Post />} />
+            <Route path='/bookclub/:ClubID' element={<BookClubPage />} />
+            <Route path='/post/:Title' element={<Post />} />
             <Route path='/write_post' element={<WritePostPage />} />
           </Routes>
         </Router>

@@ -174,7 +174,6 @@ function EditBookClubPage() {
         <Center>
             <MainContainer>
                 <Nav />
-                <MainPicture src='./mainthema.jpg' alt='mainthema' />
                 <FirstContainer>
                     <BookClubContainer>
                         <BookClub_UpContainer><Title>독서 클럽 수정</Title></BookClub_UpContainer>

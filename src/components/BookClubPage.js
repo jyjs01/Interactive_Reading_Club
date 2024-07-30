@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import Modal from 'react-modal';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '../UserContext'; 
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
 import Nav from './Nav';
 
@@ -152,43 +149,66 @@ const PaginationButton = styled.button`
 `;
 
 function BookClubPage() {
-
+    const location = useLocation();
+    const { state } = location;
+    const club = state?.club || {};
     const [posts, setPosts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [error, setError] = useState(null);
     const postsPerPage = 6;
-    const [selectedPost, setSelectedPost] = useState(null);
     const { user } = useUser();
 
     useEffect(() => {
-        fetch('http://localhost:4000/arrange_post')
+        fetch('http://localhost:4000/arrange_post', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                club_id: club.ClubID
+            })
+        })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    setPosts(data.posts);
+                    setPosts(data.posts || []);
                     setError(null); // Clear previous errors
                     setCurrentPage(1);
+                } else {
+                    setError(data.message || 'Failed to fetch Posts. Please try again.');
                 }
             })
             .catch(error => {
                 console.error('Error fetching Posts:', error);
                 setError('Failed to fetch Posts. Please try again.');
             });
-    }, []);
+    }, [club.ClubID]);
 
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
-    const totalPages = Math.ceil(posts.length / postsPerPage);
-
-    const handlePostClick = (post) => {
-        setSelectedPost(post);
-    }
-
-
+    const currentPosts = Array.isArray(posts) ? posts.slice(indexOfFirstPost, indexOfLastPost) : [];
+    const totalPages = Array.isArray(posts) ? Math.ceil(posts.length / postsPerPage) : 0;
 
     const navigate = useNavigate();
-    const GotoPost = () => { navigate('/post'); };
+    const GotoPost = (post) => { 
+        navigate(`/post/${post.Title}`, {state: {club, post}});
+    };
+
+    const GotoWrite = () => {
+        navigate('/write_post', {state: {club}});
+    };
+
+    const formatDate = (isoDate) => {
+        const date = new Date(isoDate);
+        return date.toLocaleString('ko-KR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+        });
+    };
 
     return (
         <Center>
@@ -204,15 +224,15 @@ function BookClubPage() {
                                     <Th>작성일자</Th>
                                 </Tr>
                             </thead>
-                            {currentPosts.map((post) => (
-                                <Post>
-                                    <Tr key={post.PostID} height='post' color='post' shadow='post' onClick={GotoPost}>
+                            <Post>
+                                {currentPosts.map(post => (                           
+                                    <Tr key={post.PostID} height='post' color='post' shadow='post' onClick={() => GotoPost(post)}>
                                         <Section>{post.Title}</Section>
                                         <Section>{post.UserID}</Section>
-                                        <Section>{post.CreatedAt}</Section>
+                                        <Section>{formatDate(post.CreatedAt)}</Section>
                                     </Tr>
-                                </Post>
-                            ))}
+                                ))}
+                            </Post>
                         </Table>
                         <PaginationContainer>
                             {[...Array(totalPages)].map((_, index) => (
@@ -232,11 +252,11 @@ function BookClubPage() {
                     </RightContainer>
                 </FirstContainer>
                 <ButtonContainer>
-                    <Button>게시글 작성</Button>
+                    <Button onClick={GotoWrite}>게시글 작성</Button>
                 </ButtonContainer>
             </MainContainer>
         </Center>
-    )
+    );
 }
 
 export default BookClubPage;

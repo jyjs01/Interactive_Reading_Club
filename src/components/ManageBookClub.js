@@ -93,6 +93,7 @@ const BookClubItem = styled.li`
     border: 1px solid #ccc;
     border-radius: 5px;
     height: 200px;
+    cursor: pointer;
 `;
 
 // 책 사진
@@ -106,6 +107,7 @@ const BookClubInfo = styled.div`
     display: flex;
     flex-direction: column;
     width: 928px;
+    padding: 30px 30px 30px 0;
 `;
 
 // ClubName
@@ -299,8 +301,12 @@ function ManageBookClub() {
 
     const navigate = useNavigate();
 
-    const GotoEdit = () => {
-        navigate('/edit_bookclub');
+    const GotoEdit = (club) => {
+        navigate(`/edit_bookclub/${club.ClubName}`, {state: {club}});
+    }
+
+    const GotoBookClub = (club) => {
+        navigate(`/bookclub/${club.ClubName}`, { state: { club }});
     }
 
     return (
@@ -317,13 +323,13 @@ function ManageBookClub() {
                             <BookClubList>
                                 {currentBookClubs.map((club) => (
                                     <BookClubItem key={club.ClubID}>
-                                        <BookPicture src={club.ImageUrl} alt="Book" />
-                                        <BookClubInfo>
+                                        <BookPicture src={club.ImageUrl} alt="Book" onClick={() => GotoBookClub(club)} />
+                                        <BookClubInfo onClick={() => GotoBookClub(club)}>
                                             <ClubName>이름: {club.ClubName}</ClubName>
                                             <Description>설명: {club._Description}</Description>
                                         </BookClubInfo>
                                         <ButtonContainer>
-                                            <Button onClick={GotoEdit}>수정</Button>
+                                            <Button onClick={() => GotoEdit(club)}>수정</Button>
                                             <Button onClick={() => setSelectedBookclub(club)}>탈퇴</Button>
                                         </ButtonContainer>
                                     </BookClubItem>

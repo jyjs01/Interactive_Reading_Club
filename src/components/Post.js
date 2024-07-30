@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '../UserContext'; 
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -147,6 +147,36 @@ const CommentDate = styled.h3`
 
 function Post() {
 
+    const location = useLocation();
+    const { state } = location;
+    const club = state?.club || {};
+    const post = state?.post || {};
+    const [writter, setWritter] = useState('');
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        fetch('http://localhost:4000/fetch_postwritter', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                user_id: post.UserID
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    setWritter(data.writter);
+                    setError(null); // Clear previous errors
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching writter:', error);
+                setError('Failed to fetch writter. Please try again.');
+            });
+    }, []);
+
     return (
         <Center>
             <MainContainer>
@@ -154,14 +184,12 @@ function Post() {
                 <FirstContainer>
                     <PostContainer>
                         <UpContainer>
-                            <PostTitle>제목 1</PostTitle>
+                            <PostTitle>제목 : {post.Title}</PostTitle>
                         </UpContainer>
                         <MiddleContainer>
-                            <PostWritter>작성자 : </PostWritter>
+                            <PostWritter>작성자 : {writter}</PostWritter>
                         </MiddleContainer>
-                        <DownContainer id='post'>
-                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                        </DownContainer>
+                        <DownContainer id='post'>{post.Content}</DownContainer>
                     </PostContainer>
                 </FirstContainer>
                 <SecondContainer>

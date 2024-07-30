@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import Modal from 'react-modal';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '../UserContext'; 
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -126,6 +125,47 @@ const SubmitButton = styled.input`
 
 function WritePostPage() {
 
+    const location = useLocation();
+    const { state } = location;
+    const club = state?.club || {};
+    const navigate = useNavigate();
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
+    const { user } = useUser();
+    const currentTime = new Date();
+    
+
+    const handleWritePost = async (event) => {
+        event.preventDefault();
+
+        try {
+            const response = await fetch('http://localhost:4000/write_post', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({ 
+                    club_id: club.ClubID,   
+                    user_id: user.UserID,                 
+                    title, 
+                    content,
+                    currentTime
+                }),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                navigate(`/bookclub/${club.ClubName}`, {state: {club}});
+            } else {
+                toast.error(result.message);
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error('오류가 발생했습니다.');
+        }
+    }
+
     return (
         <Center>
             <MainContainer>
@@ -134,18 +174,24 @@ function WritePostPage() {
                     <PostContainer>
                         <Post_UpContainer><Title>게시글 작성</Title></Post_UpContainer>
                         <Post_DownContainer>
-                            <Form>
+                            <Form onSubmit={handleWritePost}>
 
                                 <Line>제목 :
                                     <Input
                                         type='text'
                                         name='post_title'
+                                        value={title}
+                                        onChange={(e) => setTitle(e.target.value)}
+                                        required
                                     />
                                 </Line>
 
                                 <Line>내용 :
                                     <Content
                                         name='post_title'
+                                        value={content}
+                                        onChange={(e) => setContent(e.target.value)}
+                                        required
                                     />
                                 </Line>
 
@@ -154,6 +200,10 @@ function WritePostPage() {
                         </Post_DownContainer>
                     </PostContainer>
                 </FirstContainer>
+                <ToastContainer 
+                    position='top-center'
+                    hideProgressBar={true}          
+                />
             </MainContainer>
         </Center>
     )

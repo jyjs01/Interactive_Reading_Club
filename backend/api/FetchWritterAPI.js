@@ -2,7 +2,7 @@ const sanitize = require('sanitize-html');
 const DB = require('../database');
 const qs = require('qs');
 
-function FetchPostAPI(request, response) {
+function FetchWritterAPI(request, response) {
 
     let body = "";
 
@@ -12,24 +12,24 @@ function FetchPostAPI(request, response) {
 
     request.on("end", ()=>{
 
-        let getID = qs.parse(body);
-        let getClubID = sanitize(getID.club_id);
+        let getInfo = qs.parse(body);
 
+        let getUserID = sanitize(getInfo.user_id);
 
-        DB.query('SELECT * FROM Post WHERE ClubID = ?', [getClubID], (error, results)=>{
+        DB.query('SELECT _Name AS name FROM User WHERE UserID = ?', [getUserID], (error, results)=>{
             if (error) {
                 console.log(error);
                 response.writeHead(500, { 'Content-Type': 'application/json' });
                 response.end(JSON.stringify({ success: false, message: 'Database error' }));
                 return;
             }
-    
-            const posts = results;
-    
+
+            const writter = results[0].name;
+
             response.writeHead(200, { 'Content-Type': 'application/json' });
-            response.end(JSON.stringify({ success: true, posts }));
+            response.end(JSON.stringify({ success: true, writter }));
         });
     });
 }
 
-module.exports = FetchPostAPI;
+module.exports = FetchWritterAPI;
