@@ -87,7 +87,7 @@ const SecondContainer = styled.div`
 
 // 댓글 컨테이너
 const CommentContainer = styled.div`
-    width: 850px;
+    width: 1050px;
     border: transparent;
     border-radius: 10px;
     background-color: #F0E3E3;
@@ -145,6 +145,41 @@ const CommentDate = styled.h3`
     text-align: center;
 `;
 
+// 댓글 작성 폼
+const CommentForm = styled.form`
+    display: flex;
+    margin-top: 20px;
+    align-items: center;
+    height: 200px;
+`;
+
+// 입력
+const Input = styled.textarea`
+    flex: 0.9;
+    background-color: #EDEDED;
+    border-style: none;
+    border-radius: 10px;
+    font-size: 17pt;
+    font-weight: 570;
+    padding: 10px 10px 10px 0;
+    margin-left: 10px;
+    height: 120px;
+`;
+
+// 제출 버튼
+const SubmitButton = styled.input`
+    flex: 0.1;
+    background-color: #426B1F;
+    border-radius: 10px;
+    color: white;
+    width: 180px;
+    height: 58px;
+    border: transparent;
+    cursor: pointer;
+    font-size: 15pt;
+    margin: 0 10px;
+`;
+
 function Post() {
 
     const location = useLocation();
@@ -184,7 +219,7 @@ function Post() {
                 <FirstContainer>
                     <PostContainer>
                         <UpContainer>
-                            <PostTitle>제목 : {post.Title}</PostTitle>
+                            <PostTitle>{post.Title}</PostTitle>
                         </UpContainer>
                         <MiddleContainer>
                             <PostWritter>작성자 : {writter}</PostWritter>
@@ -207,6 +242,10 @@ function Post() {
                                     <CommentDate>2024-07-29 21:43</CommentDate>
                                 </Right>
                             </Comment>
+                            <CommentForm>
+                                <Input name='input_comment'/>
+                                <SubmitButton type='submit' value='작성' />
+                            </CommentForm>
                         </DownContainer>
                     </CommentContainer>
                 </SecondContainer>

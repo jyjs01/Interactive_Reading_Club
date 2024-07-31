@@ -132,6 +132,9 @@ const PaginationContainer = styled.div`
     display: flex;
     justify-content: center;
     margin: 20px 0;
+    width: inherit;
+    position: absolute;
+    bottom: 20px;
 `;
 
 // 페이지네이션 버튼
@@ -152,37 +155,62 @@ function BookClubPage() {
     const location = useLocation();
     const { state } = location;
     const club = state?.club || {};
+    const [post, setPost] = useState([]);
     const [posts, setPosts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [error, setError] = useState(null);
+    const [writter, setWritter] = useState('');
     const postsPerPage = 6;
     const { user } = useUser();
 
     useEffect(() => {
-        fetch('http://localhost:4000/arrange_post', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: new URLSearchParams({
-                club_id: club.ClubID
-            })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    setPosts(data.posts || []);
+        const fetchPostsAndWritters = async () => {
+            try {
+                const postResponse = await fetch('http://localhost:4000/arrange_post', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        club_id: club.ClubID
+                    })
+                });
+
+                const postData = await postResponse.json();
+                if (postData.success) {
+                    const postsWithWritters = await Promise.all(postData.posts.map(async (post) => {
+                        const writterResponse = await fetch('http://localhost:4000/fetch_postwritter', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: new URLSearchParams({
+                                user_id: post.UserID
+                            })
+                        });
+
+                        const writterData = await writterResponse.json();
+                        if (writterData.success) {
+                            return { ...post, writter: writterData.writter };
+                        } else {
+                            return { ...post, writter: 'Unknown' };
+                        }
+                    }));
+                    setPosts(postsWithWritters);
                     setError(null); // Clear previous errors
                     setCurrentPage(1);
                 } else {
-                    setError(data.message || 'Failed to fetch Posts. Please try again.');
+                    setError(postData.message || 'Failed to fetch Posts. Please try again.');
                 }
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error('Error fetching Posts:', error);
                 setError('Failed to fetch Posts. Please try again.');
-            });
+            }
+        };
+
+        fetchPostsAndWritters();
     }, [club.ClubID]);
+
 
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -228,7 +256,7 @@ function BookClubPage() {
                                 {currentPosts.map(post => (                           
                                     <Tr key={post.PostID} height='post' color='post' shadow='post' onClick={() => GotoPost(post)}>
                                         <Section>{post.Title}</Section>
-                                        <Section>{post.UserID}</Section>
+                                        <Section>{post.writter || 'Unknown'}</Section>
                                         <Section>{formatDate(post.CreatedAt)}</Section>
                                     </Tr>
                                 ))}
