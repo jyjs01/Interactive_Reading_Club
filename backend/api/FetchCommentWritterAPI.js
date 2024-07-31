@@ -27,7 +27,7 @@ function FetchCommentWritterAPI(request, response) {
             const comment_writter = results[0].name;
 
             response.writeHead(200, { 'Content-Type': 'application/json' });
-            response.end(JSON.stringify({ success: true, writter }));
+            response.end(JSON.stringify({ success: true, comment_writter }));
         });
     });
 }

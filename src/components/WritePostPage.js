@@ -132,7 +132,15 @@ function WritePostPage() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const { user } = useUser();
+
     const currentTime = new Date();
+    const offset = currentTime.getTimezoneOffset(); // UTC와의 차이를 분 단위로 반환
+
+    // 로컬 시간으로 변환
+    currentTime.setMinutes(currentTime.getMinutes() - offset);
+
+    // MySQL DATETIME 형식에 맞게 포맷팅
+    const formattedTime = currentTime.toISOString().slice(0, 19).replace('T', ' ');
     
 
     const handleWritePost = async (event) => {
@@ -149,7 +157,7 @@ function WritePostPage() {
                     user_id: user.UserID,                 
                     title, 
                     content,
-                    currentTime
+                    formattedTime
                 }),
             });
 

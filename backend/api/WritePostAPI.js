@@ -19,7 +19,7 @@ function WritePostAPI(request, response) {
         let getUserID = sanitize(getPost.user_id);
         let getTitle = sanitize(getPost.title);
         let getContent = sanitize(getPost.content);
-        let getCreatedAt = sanitize(getPost.currentTime);
+        let getCreatedAt = sanitize(getPost.formattedTime);
 
 
         // PostID 갱신

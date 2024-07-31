@@ -13,6 +13,9 @@ const FetchDate = require('./api/FetchDate');
 const FetchPost = require('./api/FetchPostAPI');
 const WritePost = require('./api/WritePostAPI');
 const FetchWritter = require('./api/FetchWritterAPI');
+const FetchComment = require('./api/FetchCommentAPI');
+const FetchCommentWritter = require('./api/FetchCommentWritterAPI');
+const WriteComment = require('./api/CommentAPI');
 
 
 // 서버 생성
@@ -87,6 +90,20 @@ let app = http.createServer((request,response)=>{
 
     if(pathname === '/fetch_postwritter' && request.method === 'POST') FetchWritter(request, response);
 
+
+    // 댓글 불러오기
+
+    if(pathname === '/fetch_comment' && request.method === 'POST') FetchComment(request, response);
+
+
+    // 댓글 작성자 불러오기
+
+    if(pathname === '/fetch_commentwritter' && request.method === 'POST') FetchCommentWritter(request, response);
+
+
+    // 댓글 작성
+
+    if(pathname === '/write_comment' && request.method === 'POST') WriteComment(request, response);
 });
 
 

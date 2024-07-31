@@ -18,7 +18,7 @@ function CommentAPI(request, response){
         let getPostID = sanitize(getComment.post_id);
         let getUserID = sanitize(getComment.user_id);
         let getContent = sanitize(getComment.content);
-        let getTime = sanitize(getComment.currentTime);
+        let getTime = sanitize(getComment.formattedTime);
 
         DB.query('SELECT COUNT(*) AS count FROM Comment', (error, results_count)=>{
             if (error) {
