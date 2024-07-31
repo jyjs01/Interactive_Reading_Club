@@ -103,7 +103,7 @@ const CommentContainerTitle = styled.h2`
 // 댓글
 const Comment = styled.div`
     display: flex;
-    height: 200px;
+    height: 130px;
     box-shadow: 0 0 3px grey;
     border-radius: 10px;
 `;
@@ -180,6 +180,27 @@ const SubmitButton = styled.input`
     margin: 0 10px;
 `;
 
+// 페이지네이션 컨테이너
+const PaginationContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+`;
+
+// 페이지네이션 버튼
+const PaginationButton = styled.button`
+    background-color: #D9D9D9;
+    border: none;
+    border-radius: 5px;
+    margin: 0 5px;
+    padding: 10px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: #ccc;
+    }
+`;
+
 function Post() {
 
     const location = useLocation();
@@ -187,7 +208,17 @@ function Post() {
     const club = state?.club || {};
     const post = state?.post || {};
     const [writter, setWritter] = useState('');
+    const [commentWritter, setCommentWritter] = useState('');
+    const [comments, setComments] = useState([]);
     const [error, setError] = useState(null);
+    const [content, setContent] = useState('');
+    const { user } = useUser();
+    const currentTime = new Date();
+    const [dependency, setDependency] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
+    const commentsPerPage = 5;
+
+
 
     useEffect(() => {
         fetch('http://localhost:4000/fetch_postwritter', {
@@ -212,6 +243,137 @@ function Post() {
             });
     }, []);
 
+
+
+
+    useEffect(() => {
+        fetch('http://localhost:4000/fetch_comment', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                post_id: post.PostID
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    setComments(data.comments);
+                    setError(null); // Clear previous errors
+                    setCurrentPage(1);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching comments:', error);
+                setError('Failed to fetch comments. Please try again.');
+            });
+    }, [dependency]);
+
+
+
+
+    useEffect(() => {
+        fetch('http://localhost:4000/fetch_commentwritter', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                user_id: comments.UserID
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    setWritter(data.writter);
+                    setError(null); // Clear previous errors
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching writter:', error);
+                setError('Failed to fetch writter. Please try again.');
+            });
+    }, []);
+
+
+    const FetchCommentWritter = (comment) => {
+        useEffect(() => {
+            fetch('http://localhost:4000/fetch_commentwritter', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    post_id: comment.PostID
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        setCommentWritter(data.writter);
+                    } else {
+                        console.error('Failed to fetch comment writter');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching comment writter:', error);
+                });
+        }, []);
+
+        return commentWritter;
+    };
+
+
+
+    const handleWriteComment = async (event) => {
+        event.preventDefault();
+
+        try {
+            const response = await fetch('http://localhost:4000/write_comment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({    
+                    post_id: post.PostID,
+                    user_id: user.UserID,
+                    content,
+                    currentTime              
+                }),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                setDependency(prev => prev + 1);
+                
+            } else {
+                toast.error(result.message);
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error('오류가 발생했습니다.');
+        }
+    };
+
+    const indexOfLastComment = currentPage * commentsPerPage;
+    const indexOfFirstComment = indexOfLastComment - commentsPerPage;
+    const currentComments = comments.slice(indexOfFirstComment, indexOfLastComment);
+    const totalPages = Math.ceil(comments.length / commentsPerPage);
+
+    const formatDate = (isoDate) => {
+        const date = new Date(isoDate);
+        return date.toLocaleString('ko-KR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+        });
+    };
+
     return (
         <Center>
             <MainContainer>
@@ -233,17 +395,24 @@ function Post() {
                             <CommentContainerTitle>댓글</CommentContainerTitle>
                         </UpContainer>
                         <DownContainer>
-                            <Comment>
-                                <Left>
-                                    <CommentWritter>test</CommentWritter>
-                                    <CommentSection>~~~</CommentSection>
-                                </Left>
-                                <Right>
-                                    <CommentDate>2024-07-29 21:43</CommentDate>
-                                </Right>
-                            </Comment>
-                            <CommentForm>
-                                <Input name='input_comment'/>
+                            {currentComments.map((comment) => {
+                                <Comment>
+                                    <Left>
+                                        <CommentWritter>{FetchCommentWritter(comment)}</CommentWritter>
+                                        <CommentSection>{comment.Content}</CommentSection>
+                                    </Left>
+                                    <Right>
+                                        <CommentDate>{formatDate(comment.CreatedAt)}</CommentDate>
+                                    </Right>
+                                </Comment>
+                            })}
+                            <CommentForm onSubmit={handleWriteComment}>
+                                <Input 
+                                    name='content'
+                                    value={content}
+                                    onChange={(e) => setContent(e.target.value)}
+                                    required
+                                />
                                 <SubmitButton type='submit' value='작성' />
                             </CommentForm>
                         </DownContainer>
