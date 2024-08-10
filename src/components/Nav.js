@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import Modal from 'react-modal';
 
 // 네비게이션 컨테이너
 const NavContainer = styled.nav`
@@ -44,13 +45,100 @@ const NotificationLogo = styled.img`
     cursor: pointer;
 `;
 
-function Nav() {
+// 상단 컨테이너
+const NotificationTop = styled.div`
+    display: flex;
+    justify-content: center;
+`;
 
+// 중단 컨테이너
+const NotificationMiddle = styled.div`
+    display: flex;
+    justify-content: center;
+    width: inherit;
+    margin : 50px 0;
+`;
+
+// 테이블
+const Table = styled.table`
+    width: inherit;
+    font-family: "Newsreader";
+    text-align: center;
+    border-spacing: 0;
+`;
+
+// 행
+const Tr = styled.tr`
+    height: 50px;
+`;
+
+const Th = styled.th`
+    width: 100px;
+    border-top: 3px solid black;
+    border-bottom: 3px solid black;
+`;
+
+const Td = styled.td`
+    width: 100px;
+`;
+
+// 독서 클럽 행
+const BookClub = styled.tbody`
+    box-shadow: 0 1px 3px grey;
+`;
+
+// 하단 컨테이너
+const NotificationBottom = styled.div`
+    display: flex;
+    justify-content: center;
+`;
+
+// 닫기 버튼
+const ExitButton = styled.button`
+    background-color: #426B1F;
+    border-radius: 10px;
+    color: white;
+    width: 150px;
+    height: 55px;
+    border: transparent;
+    cursor: pointer;
+    font-size: 15pt;
+`;
+
+const customStyles = {
+    overlay: {
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        zIndex: 1000
+    }, 
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+        width: '700px',
+        padding: '20px',
+        borderRadius: '10px',
+        boxShadow: '0 0 5px black'
+    },
+};
+
+function Nav() {
+    const [modalIsOpen, setModalIsOpen] = useState(false);
     const navigate = useNavigate();
 
     const GotoMain = () => {
         navigate('/main');
-    }
+    };
+
+    const openModal = () => {
+        setModalIsOpen(true);
+    };
+
+    const closeModal = () => {
+        setModalIsOpen(false);
+    };
 
     return (
         <NavContainer>
@@ -58,9 +146,40 @@ function Nav() {
                 <Mainlogo src='/mainlogo.jpg' alt='mainlogo' />
                 <MainTitle>Interactive Reading Club</MainTitle>
             </TitleContainer>
-            <NotificationLogo src='https://cdn.icon-icons.com/icons2/1993/PNG/512/alarm_alert_attention_bell_clock_notification_ring_icon_123203.png' alt='notification' />
+            <NotificationLogo
+                src='https://cdn.icon-icons.com/icons2/1993/PNG/512/alarm_alert_attention_bell_clock_notification_ring_icon_123203.png'
+                alt='notification'
+                onClick={openModal}
+            />
+            <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                style={customStyles}
+                contentLabel="Notification Modal"
+            >
+                <NotificationTop><h2>독서 클럽 일정</h2></NotificationTop>
+                <NotificationMiddle>
+                    <Table>
+                        <thead>
+                            <Tr>
+                                <Th>이름</Th>
+                                <Th>시작일</Th>
+                                <Th>종료일</Th>
+                            </Tr>
+                        </thead>
+                        <BookClub>
+                            <Tr>
+                                <Td>dd</Td>
+                                <Td>dd</Td>
+                                <Td>dd</Td>
+                            </Tr>
+                        </BookClub>
+                    </Table>
+                </NotificationMiddle>
+                <NotificationBottom><ExitButton onClick={closeModal}>닫기</ExitButton></NotificationBottom>
+            </Modal>
         </NavContainer>
-    )
+    );
 }
 
 export default Nav;

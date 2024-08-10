@@ -17,8 +17,8 @@ function ReadingScheduleAPI(UserID, Start, End, ClubID) {
 
         // ReadingSchedule 생성
 
-        DB.query('INSERT INTO ReadingSchedule (ScheduleID, UserID, StartDate, EndDate, ClubID) VALUES (?, ?, ?, ?, ?)'
-            , [ScheduleID, UserID, Start, End, ClubID], (error, results_create)=>{
+        DB.query('INSERT INTO ReadingSchedule (ScheduleID, StartDate, EndDate, ClubID) VALUES (?, ?, ?, ?)'
+            , [ScheduleID, Start, End, ClubID], (error, results_create)=>{
             if (error) {
                 console.log(error);
                 return;
