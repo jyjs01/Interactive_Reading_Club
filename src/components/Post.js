@@ -244,7 +244,7 @@ function Post() {
             console.error('Error fetching writter:', error);
             setError('Failed to fetch writter. Please try again.');
         });
-    }, [post.UserID]);
+    }, [post.UserID, dependency]);
 
     
 
@@ -312,7 +312,7 @@ function Post() {
         if (comments.length > 0) {
             fetchCommentWritters();
         }
-    }, [comments]);
+    }, [comments, dependency]);
 
     const currentTime = new Date();
     const offset = currentTime.getTimezoneOffset(); // UTC와의 차이를 분 단위로 반환
@@ -326,6 +326,7 @@ function Post() {
 
 
     // 댓글 쓰기
+    
 
     const handleWriteComment = async (event) => {
         event.preventDefault();
