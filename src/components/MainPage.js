@@ -289,6 +289,7 @@ function MainPage() {
 
     const groupedBookclubs = groupItems(bookclubs, 4);  
     const visibleGroups = groupedBookclubs.slice(0, 2);
+    
 
     return (
         <Center>
@@ -325,8 +326,9 @@ function MainPage() {
                             {visibleGroups.map((group, index) => (
                                 <BookClubs_List key={index}>
                                     {group.map(club => (
+                                        
                                         <BookClubs key={club.ClubID}>
-                                            <BookPicture src={club.ImageUrl} alt="Book" />
+                                            <BookPicture src={club.ImageURL} alt="Book" />
                                             <ClubName>{club.ClubName}</ClubName>
                                         </BookClubs>
                                     ))}

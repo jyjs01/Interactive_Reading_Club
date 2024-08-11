@@ -15,6 +15,7 @@ import ManageBookClub from './components/ManageBookClub';
 import BookClubPage from './components/BookClubPage';
 import Post from './components/Post';
 import WritePostPage from './components/WritePostPage';
+import AddBookPage from './components/AddBookPage';
 
 function App() {
 
@@ -37,6 +38,7 @@ function App() {
             <Route path='/bookclub/:ClubID' element={<BookClubPage />} />
             <Route path='/post/:Title' element={<Post />} />
             <Route path='/write_post' element={<WritePostPage />} />
+            <Route path='/list_bookclub/:id' element={<AddBookPage />} />
           </Routes>
         </Router>
       </UserProvider>

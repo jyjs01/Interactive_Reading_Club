@@ -128,7 +128,6 @@ function truncate(text, maxLength) {
 }
 
 function SearchBookPage() {
-
     const [query, setQuery] = useState('');
     const [books, setBooks] = useState([]);
     const [error, setError] = useState(null);
@@ -176,18 +175,21 @@ function SearchBookPage() {
                         />
                     </Form>
                     <BookList>
-                        {currentBooks.map((book) => (
-                            <BookItem key={book.id} onClick={() => handleBookClick(book)}>
-                                {book.volumeInfo.imageLinks?.thumbnail && (
-                                    <BookPicture src={book.volumeInfo.imageLinks.thumbnail} alt={book.volumeInfo.title} />
-                                )}
-                                <BookInfo>
-                                    <Title>책 제목 : {book.volumeInfo.title}</Title>
-                                    <Author>저자 : {book.volumeInfo.authors?.join(', ')}</Author>
-                                    <Summary>설명 : {truncate(book.volumeInfo.description || '', 200)}</Summary>
-                                </BookInfo>
-                            </BookItem>
-                        ))}
+                        {currentBooks.map((book) => {
+                            const imageUrl = book.volumeInfo.imageLinks?.thumbnail?.replace('&amp;', '&');
+                            return (
+                                <BookItem key={book.id} onClick={() => handleBookClick(book)}>
+                                    {imageUrl && (
+                                        <BookPicture src={imageUrl} alt={book.volumeInfo.title} />
+                                    )}
+                                    <BookInfo>
+                                        <Title>책 제목 : {book.volumeInfo.title}</Title>
+                                        <Author>저자 : {book.volumeInfo.authors?.join(', ')}</Author>
+                                        <Summary>설명 : {truncate(book.volumeInfo.description || '', 200)}</Summary>
+                                    </BookInfo>
+                                </BookItem>
+                            );
+                        })}
                     </BookList>
                     <PaginationContainer>
                         {[...Array(totalPages)].map((_, index) => (
@@ -203,7 +205,7 @@ function SearchBookPage() {
                 </BookContainer>
             </MainContainer>
         </Center>
-    )
+    );
 }
 
 export default SearchBookPage;

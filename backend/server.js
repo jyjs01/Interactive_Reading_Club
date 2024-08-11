@@ -16,6 +16,7 @@ const FetchComment = require('./api/FetchCommentAPI');
 const FetchCommentWritter = require('./api/FetchCommentWritterAPI');
 const WriteComment = require('./api/CommentAPI');
 const ArrangeNotification = require('./api/NotificationAPI');
+const AddBook = require('./api/AddBookAPI');
 
 
 // 서버 생성
@@ -106,6 +107,11 @@ let app = http.createServer((request,response)=>{
     // 독서 클럽 이름, 일정 불러오기 (알림)
 
     if(pathname === '/fetch_bookclub' && request.method === 'POST') ArrangeNotification(request, response);
+
+
+    // 독서 클럽에 책 추가
+
+    if(pathname === '/add_book' && request.method === 'POST') AddBook(request, response);
 });
 
 

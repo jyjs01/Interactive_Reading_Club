@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '../UserContext'; 
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -226,15 +226,16 @@ const ModalButton = styled.button`
 `;
 
 
-function ManageBookClub() {
+function AddBookPage() {
 
     const [bookclubs, setBookclubs] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [error, setError] = useState(null);
     const bookclubsPerPage = 3;
     const [selectedBookclub, setSelectedBookclub] = useState(null);
-    const [dependency, setDependency] = useState(0);
     const { user } = useUser();
+    const location = useLocation();
+    const { book } = location.state || {};
 
     useEffect(() => {
         fetch('http://localhost:4000/arrange_mybookclub', {
@@ -258,7 +259,7 @@ function ManageBookClub() {
                 console.error('Error fetching book clubs:', error);
                 setError('Failed to fetch bookclubs. Please try again.');
             });
-    }, [dependency]);
+    }, []);
 
     const indexOfLastBook = currentPage * bookclubsPerPage;
     const indexOfFirstBook = indexOfLastBook - bookclubsPerPage;
@@ -269,25 +270,35 @@ function ManageBookClub() {
         setSelectedBookclub(null);
     };
 
-    const handleWithdrawBookClub = async (event) => {
+    const navigate = useNavigate();
+
+    const GotoBookClub = (club) => {
+        navigate(`/bookclub/${club.ClubName}`, { state: { club }});
+    }
+
+    const handleAddBook = async (event) => {
         event.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:4000/withdraw_bookclub', {
+            const response = await fetch('http://localhost:4000/add_book', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: new URLSearchParams({    
-                    user_id: user.UserID,                 
-                    club_id: selectedBookclub.ClubID
+                body: new URLSearchParams({                  
+                    club_id: selectedBookclub.ClubID,
+                    image_url: book.volumeInfo.imageLinks.thumbnail,
+                    book_id: book.id,
+                    book_title: book.volumeInfo.title,
+                    book_author: book.volumeInfo.authors?.join(', '),
+                    book_isbn: book.volumeInfo.industryIdentifiers?.map(id => id.identifier).join(', '),
+                    book_summary: book.volumeInfo.description
                 }),
             });
 
             const result = await response.json();
 
             if (result.success) {
-                setDependency(prev => prev + 1);
                 handleCloseModal();
                 toast.success(result.message);
             } else {
@@ -299,38 +310,26 @@ function ManageBookClub() {
         }
     }
 
-    const navigate = useNavigate();
-
-    const GotoEdit = (club) => {
-        navigate(`/edit_bookclub/${club.ClubName}`, {state: {club}});
-    }
-
-    const GotoBookClub = (club) => {
-        navigate(`/bookclub/${club.ClubName}`, { state: { club }});
-    }
-
     return (
         <Center>
             <MainContainer>
                 <Nav />
-                <MainPicture src='./mainthema.jpg' alt='mainthema' />
                 <FirstContainer>
                     <BookClubContainer>
                         <BookClub_UpContainer>
-                            <Title>독서 클럽 관리</Title>
+                            <Title>책 추가</Title>
                         </BookClub_UpContainer>
                         <BookClub_DownContainer>
                             <BookClubList>
-                                {currentBookClubs.map((club) => (
+                                {currentBookClubs.filter(club => club.ImageURL === null).map((club) => (
                                     <BookClubItem key={club.ClubID}>
-                                        <BookPicture src={club.ImageURL} alt="Book" onClick={() => GotoBookClub(club)} />
+                                        <BookPicture src={club.ImageUrl} alt="Book" onClick={() => GotoBookClub(club)} />
                                         <BookClubInfo onClick={() => GotoBookClub(club)}>
                                             <ClubName>이름: {club.ClubName}</ClubName>
                                             <Description>설명: {club._Description}</Description>
                                         </BookClubInfo>
                                         <ButtonContainer>
-                                            <Button onClick={() => GotoEdit(club)}>수정</Button>
-                                            <Button onClick={() => setSelectedBookclub(club)}>탈퇴</Button>
+                                            <Button onClick={() => setSelectedBookclub(club)}>책 추가</Button>
                                         </ButtonContainer>
                                     </BookClubItem>
                                 ))}
@@ -363,9 +362,9 @@ function ManageBookClub() {
                                 <BookPicture src={selectedBookclub.ImageUrl} alt="Book" />
                                 <ClubName id='modal'>{selectedBookclub.ClubName}</ClubName>
                                 <Description id='modal'>{selectedBookclub._Description}</Description>
-                                <Warning>탈퇴하시겠습니까?</Warning>
+                                <Warning>추가하시겠습니까?</Warning>
                                 <ModalButtonContainer>
-                                    <ModalButton onClick={handleWithdrawBookClub}>탈퇴</ModalButton>
+                                    <ModalButton onClick={handleAddBook}>추가</ModalButton>
                                     <ModalButton onClick={handleCloseModal}>닫기</ModalButton>
                                 </ModalButtonContainer>
                             </ModalSection>
@@ -381,4 +380,4 @@ function ManageBookClub() {
     )
 }
 
-export default ManageBookClub;
+export default AddBookPage;
