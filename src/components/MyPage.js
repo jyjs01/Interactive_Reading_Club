@@ -4,9 +4,9 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
 import Nav from './Nav';
-import Footer from './Footer';
+import { useNavigate } from 'react-router-dom';
 
-
+// 배경
 const Center = styled.div`
     display: flex;
     justify-content: center;
@@ -23,13 +23,13 @@ const MainContainer = styled.div`
     margin: 15px;
 `;
 
-// 첫번째 컨테이너
-const FirstContainer = styled.div`
+// 내용 컨테이너
+const SectionContainer = styled.div`
     display: flex;
     justify-content: space-around;
     align-items: center;
     width: inherit;
-    height: 450px;
+    height: 615px;
     margin: 150px 0;
 `;
 
@@ -47,7 +47,7 @@ const ProfileContainer = styled.div`
     box-shadow: 0 0 5px grey;
 `;
 
-// 프로필 컨테이너
+// 프로필
 const Profile = styled.div`
     display: flex;
     flex-direction: column;
@@ -72,7 +72,8 @@ const Form = styled.form`
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    height: 189px;
+    height: 259px;
+    margin-top: 50px;
 `;
 
 // 현재 비밀번호
@@ -107,67 +108,12 @@ const SubmitButton = styled.input`
     font-size: 15pt;
 `;
 
-// 두번째 컨테이너
-const SecondContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: inherit;
-    height: 800px;
-    margin-bottom: 50px;
-`;
-
-// 독서 클럽 컨테이너
-const BookClubContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    width: 1250px;
-    height: 700px;
-    border: transparent;
-    border-radius: 10px;
-    padding: 5px;
-    background-color: #EAEAEA;
-    box-shadow: 0 0 5px grey;
-`;
-
-// 독서 클럽 컨테이너 상단
-const BookClub_UpContainer = styled.div`
-    height: 60px;
-    margin: 5px;
-`;
-
-// 독서 클럽 활동 기록
-const BookClub_Title = styled.h2`
-    font-family: "Inter";
-    margin-left: 20px;
-`;
-
-// 독서 클럽 컨테이너 하단
-const BookClub_DownContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    height: 600px;
-`;
-
-// 리스트 
-const BookClubs_List = styled.div`
-    display: flex;
-    justify-content: space-around;
-`;
-
-// 독서 클럽
-const BookClubs = styled.div`
-    width: 230px;
-    height: 250px;
-    background-color: white;
-`;
-
 function MyPage() {
 
     const [currentpassword, setCurrentPassword] = useState('');
     const [changepassword, setChangePassword] = useState('');
+    const { user } = useUser();
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -188,20 +134,18 @@ function MyPage() {
         if (result.success) {
             toast.success(result.message);          
             setTimeout(() => {
-                window.location.href = '/login';
+                navigate('/login');
             }, 1500);
         } else {
             toast.error(result.message);
         }
     };
 
-    const { user } = useUser();
-
     return (
         <Center>
             <MainContainer>
                 <Nav />
-                <FirstContainer>
+                <SectionContainer>
                     <ProfileContainer>
                         <Profile>
                             <Name>이름 : {user._Name}</Name>
@@ -228,18 +172,7 @@ function MyPage() {
                             </Form>
                         </Profile>
                     </ProfileContainer>
-                </FirstContainer>
-                <SecondContainer>
-                    <BookClubContainer>
-                        <BookClub_UpContainer>
-                            <BookClub_Title>독서 클럽 활동 기록</BookClub_Title>
-                        </BookClub_UpContainer>
-                        <BookClub_DownContainer>
-                            
-                        </BookClub_DownContainer>
-                    </BookClubContainer>
-                </SecondContainer>
-                <Footer />
+                </SectionContainer>
             </MainContainer>
             <ToastContainer 
                 position='top-center'
