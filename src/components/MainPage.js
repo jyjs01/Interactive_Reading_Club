@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import Nav from './Nav';
 import Footer from './Footer';
 
-
+// 배경
 const Center = styled.div`
     display: flex;
     justify-content: center;
@@ -28,8 +28,8 @@ const MainPicture = styled.img`
     height: 600px;
 `;
 
-// 첫번째 컨테이너
-const FirstContainer = styled.div`
+// 상단 컨테이너
+const UpContainer = styled.div`
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -82,12 +82,12 @@ const LogoutButton = styled.button`
     font-size: 15pt;
 `;
 
-// 책 정보 컨테이너
+// 책 컨테이너
 const BookContainer = styled.div`
     display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    width: 900px;
+    justify-content: center;
+    align-items: center;
+    width: 400px;
     height: 350px;
     border: transparent;
     border-radius: 10px;
@@ -96,50 +96,20 @@ const BookContainer = styled.div`
     box-shadow: 0 0 5px grey;
 `;
 
-// 책 정보 컨테이너 상단
-const Book_UpContainer = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 60px;
-    margin: 5px;
-`;
-
-// 최근 소개된 책들
-const Book_Title = styled.h2`
-    font-family: "Inter";
-    margin-left: 20px;
-`;
-
 // 책 검색 버튼
 const SearchBook = styled.button`
     background-color: #426B1F;
     border-radius: 10px;
     color: white;
     width: 190px;
-    height: 50px;
+    height: 100px;
     border: transparent;
     cursor: pointer;
     font-size: 15pt;
 `;
 
-// 책 정보 컨테이너 하단
-const Book_DownContainer = styled.div`
-    display: flex;
-    justify-content: space-around;
-`;
-
-// 책 정보
-const Books = styled.div`
-    width: 230px;
-    height: 250px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 0 5px grey;
-`;
-
-// 두번째 컨테이너
-const SecondContainer = styled.div`
+// 하단 컨테이너
+const BottomContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -223,7 +193,7 @@ const BookPicture = styled.img`
     height: 180px;
 `;
 
-// ClubName
+// 독서 클럽 이름
 const ClubName = styled.h2`
     font-family: "Inter";
 `;
@@ -270,7 +240,6 @@ function MainPage() {
 
 
     const [bookclubs, setBookclubs] = useState([]);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         fetch('http://localhost:4000/mainarrange_bookclub')
@@ -278,12 +247,10 @@ function MainPage() {
             .then(data => {
                 if (data.success) {
                     setBookclubs(data.bookclubs);
-                    setError(null); // Clear previous errors
                 }
             })
             .catch(error => {
                 console.error('Error fetching book clubs:', error);
-                setError('Failed to fetch bookclubs. Please try again.');
             });
     }, []);
 
@@ -296,25 +263,17 @@ function MainPage() {
             <MainContainer>
                 <Nav />
                 <MainPicture src='./mainthema.jpg' alt='mainthema' />
-                <FirstContainer>
+                <UpContainer>
                     <ProfileContainer>
                         <Name>{user._Name} 님</Name>
                         <GotoMyPageButton onClick={GotoMyPage}>내 정보</GotoMyPageButton>
                         <LogoutButton onClick={Logout}>로그아웃</LogoutButton>
                     </ProfileContainer>
                     <BookContainer>
-                        <Book_UpContainer>
-                            <Book_Title>최근 소개된 책들</Book_Title>
-                            <SearchBook onClick={GotoSearchBook}>책 검색</SearchBook>
-                        </Book_UpContainer>
-                        <Book_DownContainer>
-                            <Books></Books>
-                            <Books></Books>
-                            <Books></Books>
-                        </Book_DownContainer>
+                        <SearchBook onClick={GotoSearchBook}>책 검색</SearchBook>
                     </BookContainer>
-                </FirstContainer>
-                <SecondContainer>
+                </UpContainer>
+                <BottomContainer>
                     <BookClubContainer>
                         <BookClub_UpContainer>
                             <BookClub_Title>독서 클럽 목록</BookClub_Title>
@@ -336,10 +295,9 @@ function MainPage() {
                             ))}
                         </BookClub_DownContainer>
                     </BookClubContainer>
-                </SecondContainer>
+                </BottomContainer>
                 <Footer />
             </MainContainer>
-
         </Center>
     )
 }
