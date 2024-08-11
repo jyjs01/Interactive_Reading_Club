@@ -210,6 +210,11 @@ function groupItems(items, groupSize){
 
 function MainPage() {
 
+    const { user } = useUser();
+    const [bookclubs, setBookclubs] = useState([]);
+    const groupedBookclubs = groupItems(bookclubs, 4);  
+    const visibleGroups = groupedBookclubs.slice(0, 2);
+
     const navigate = useNavigate();
 
     const GotoMyPage = () => {
@@ -236,11 +241,6 @@ function MainPage() {
         navigate('/manage_bookclub');
     }
 
-    const { user } = useUser();
-
-
-    const [bookclubs, setBookclubs] = useState([]);
-
     useEffect(() => {
         fetch('http://localhost:4000/mainarrange_bookclub')
             .then(response => response.json())
@@ -253,9 +253,6 @@ function MainPage() {
                 console.error('Error fetching book clubs:', error);
             });
     }, []);
-
-    const groupedBookclubs = groupItems(bookclubs, 4);  
-    const visibleGroups = groupedBookclubs.slice(0, 2);
     
 
     return (
