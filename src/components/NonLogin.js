@@ -73,12 +73,14 @@ const ExplainSection = styled.div`
   font-family: "Inter";
 `;
 
+// 설명1
 const Explain1 = styled.div`
   width: 25vw;
   font-size: 13pt;
   text-align: center;
 `;
 
+// 설명2
 const Explain2 = styled.div`
   font-size: 20pt;
   width: 55vw;
