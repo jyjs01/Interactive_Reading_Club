@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Nav from './Nav';
 
+
+// 배경
 const Center = styled.div`
     display: flex;
     justify-content: center;
@@ -66,8 +68,8 @@ const Summary = styled.h4`
     white-space: pre-wrap;
 `;
 
-// 맨 위 컨테이너
-const InforContainer = styled.div`
+// 상단 컨테이너
+const InfoContainer = styled.div`
     display: flex;
     justify-content: space-around;
     width: 900px;
@@ -111,10 +113,10 @@ function BookDetailPage() {
             <MainContainer>
                 <Nav />
                 <BookDetailContainer>
-                    <InforContainer>
+                    <InfoContainer>
                         <BookID>ID : {book.id}</BookID>
                         <ISBN>ISBN : {book.volumeInfo.industryIdentifiers?.map(id => id.identifier).join(', ')}</ISBN>
-                    </InforContainer>
+                    </InfoContainer>
                     {book.volumeInfo.imageLinks?.thumbnail && (
                         <BookPicture src={book.volumeInfo.imageLinks.thumbnail} alt={book.volumeInfo.title} />
                     )}

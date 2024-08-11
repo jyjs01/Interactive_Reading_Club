@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Nav from './Nav';
 
+// 배경
 const Center = styled.div`
     display: flex;
     justify-content: center;
@@ -130,7 +131,6 @@ function truncate(text, maxLength) {
 function SearchBookPage() {
     const [query, setQuery] = useState('');
     const [books, setBooks] = useState([]);
-    const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const booksPerPage = 5; // 페이지당 책 수 설정
     const navigate = useNavigate();
@@ -145,11 +145,9 @@ function SearchBookPage() {
             const data = await response.json();
             console.log('Total Items:', data.totalItems); // 전체 결과 수 확인
             setBooks(data.items || []);
-            setError(null); // Clear previous errors
             setCurrentPage(1); // Reset to the first page when new search is made
         } catch (error) {
             console.error('Fetch error:', error);
-            setError('Failed to fetch books. Please try again.');
         }
     };
 
