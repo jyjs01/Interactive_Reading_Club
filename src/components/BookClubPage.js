@@ -23,15 +23,17 @@ const MainContainer = styled.div`
 // 첫번째 컨테이너
 const FirstContainer = styled.div`
     display: flex;
+    flex-direction: column;
     justify-content: space-around;
     align-items: center;
     width: inherit;
-    margin-top: 200px;
+    margin-top: 100px;
     margin-bottom: 50px;
 `;
 
 // 게시글 컨테이너
 const PostContainer = styled.div`
+    position: relative;
     width: 950px;
     height: 700px;
     border: transparent;
@@ -40,12 +42,12 @@ const PostContainer = styled.div`
     box-shadow: 0 0 5px grey;
 `;
 
-// 오른쪽 컨테이너
-const RightContainer = styled.div`
+// 정보 컨테이너
+const BookInfoContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 700px;
+    height: 400px;
 `;
 
 // 독서 클럽 정보 컨테이너
@@ -59,6 +61,29 @@ const BookClubInfoContainer = styled.div`
     border-radius: 10px;
     background-color: #E0D3D3;
     box-shadow: 0 0 5px grey;
+`;
+
+// 상단
+const InfoTop = styled.div`
+    display: flex;
+    justify-content: center;
+`;
+
+// 책 이미지
+const BookImg = styled.img`
+    width: 100px;
+    height: 150px;
+`;
+
+// 하단
+const InfoBottom = styled.div`
+    display: flex;
+    justify-content: center;
+`;
+
+// 책 제목
+const BookTitle = styled.h2`
+    font-family: "Newsreader";
 `;
 
 // 테이블
@@ -91,20 +116,6 @@ const Post = styled.tbody`
 
 // 내용
 const Section = styled.td`
-`;
-
-// 인원 현황 컨테이너
-const BookClubMembersContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    width: 400px;
-    height: 300px;
-    border: transparent;
-    border-radius: 10px;
-    padding: 5px;
-    background-color: #E0D3D3;
-    box-shadow: 0 0 5px grey;
 `;
 
 // 버튼 컨테이너
@@ -243,6 +254,12 @@ function BookClubPage() {
             <MainContainer>
                 <Nav />
                 <FirstContainer>
+                    <BookInfoContainer>
+                        <BookClubInfoContainer>
+                            <InfoTop><BookImg src={club.ImageURL} alt='book image' /></InfoTop>
+                            <InfoBottom><BookTitle>{club.ClubName}</BookTitle></InfoBottom>
+                        </BookClubInfoContainer>
+                    </BookInfoContainer>
                     <PostContainer>
                         <Table>
                             <thead>
@@ -274,10 +291,6 @@ function BookClubPage() {
                             ))}
                         </PaginationContainer>
                     </PostContainer>
-                    <RightContainer>
-                        <BookClubInfoContainer></BookClubInfoContainer>
-                        <BookClubMembersContainer></BookClubMembersContainer>
-                    </RightContainer>
                 </FirstContainer>
                 <ButtonContainer>
                     <Button onClick={GotoWrite}>게시글 작성</Button>
