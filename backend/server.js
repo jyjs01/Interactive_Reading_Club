@@ -9,13 +9,13 @@ const ArrangeMyBookClub = require('./api/MyBookClubListAPI');
 const JoinBookClub = require('./api/JoinBookClubAPI');
 const WithdrawBookClub = require('./api/WithdrawBookClubAPI');
 const EditBookClub = require('./api/EditBookClubAPI');
-const FetchDate = require('./api/FetchDate');
 const FetchPost = require('./api/FetchPostAPI');
 const WritePost = require('./api/WritePostAPI');
 const FetchWritter = require('./api/FetchWritterAPI');
 const FetchComment = require('./api/FetchCommentAPI');
 const FetchCommentWritter = require('./api/FetchCommentWritterAPI');
 const WriteComment = require('./api/CommentAPI');
+const ArrangeNotification = require('./api/NotificationAPI');
 
 
 // 서버 생성
@@ -57,9 +57,6 @@ let app = http.createServer((request,response)=>{
 
     if(pathname === '/arrange_mybookclub' && request.method === 'POST') ArrangeMyBookClub(request, response);
 
-    // 독서 클럽 일정 가져오기
-
-    if(pathname === '/fetch_date' && request.method === 'POST') FetchDate(request, response);
 
     // 독서 클럽 참여
 
@@ -104,6 +101,11 @@ let app = http.createServer((request,response)=>{
     // 댓글 작성
 
     if(pathname === '/write_comment' && request.method === 'POST') WriteComment(request, response);
+
+
+    // 독서 클럽 이름, 일정 불러오기 (알림)
+
+    if(pathname === '/fetch_bookclub' && request.method === 'POST') ArrangeNotification(request, response);
 });
 
 

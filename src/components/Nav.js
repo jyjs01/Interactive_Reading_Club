@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Modal from 'react-modal';
+import { useUser } from '../UserContext';
 
 // 네비게이션 컨테이너
 const NavContainer = styled.nav`
@@ -82,11 +83,6 @@ const Td = styled.td`
     width: 100px;
 `;
 
-// 독서 클럽 행
-const BookClub = styled.tbody`
-    box-shadow: 0 1px 3px grey;
-`;
-
 // 하단 컨테이너
 const NotificationBottom = styled.div`
     display: flex;
@@ -126,7 +122,10 @@ const customStyles = {
 
 function Nav() {
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [bookclubs, setBookclubs] = useState([]);
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const { user } = useUser();
 
     const GotoMain = () => {
         navigate('/main');
@@ -139,6 +138,32 @@ function Nav() {
     const closeModal = () => {
         setModalIsOpen(false);
     };
+
+    useEffect(() => {
+        fetch('http://localhost:4000/fetch_bookclub', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                user_id: user.UserID,
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    setBookclubs(data.bookclubs);
+                    setError(null);
+                } else {
+                    setError(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching book clubs:', error);
+                setError('Failed to fetch bookclubs. Please try again.');
+            });
+    }, [user.UserID]);
+
 
     return (
         <NavContainer>
@@ -167,13 +192,24 @@ function Nav() {
                                 <Th>종료일</Th>
                             </Tr>
                         </thead>
-                        <BookClub>
-                            <Tr>
-                                <Td>dd</Td>
-                                <Td>dd</Td>
-                                <Td>dd</Td>
-                            </Tr>
-                        </BookClub>
+                        <tbody>
+                            {bookclubs.map((club, index) => (
+                                club.schedules.length > 0 ? (
+                                    club.schedules.map((schedule, idx) => (
+                                        <Tr key={`${index}-${idx}`}>
+                                            <Td>{club.clubName}</Td>
+                                            <Td>{new Date(schedule.startDate).toLocaleDateString('ko-KR')}</Td>
+                                            <Td>{new Date(schedule.endDate).toLocaleDateString('ko-KR')}</Td>
+                                        </Tr>
+                                    ))
+                                ) : (
+                                    <Tr key={index}>
+                                        <Td>{club.clubName}</Td>
+                                        <Td colSpan="2">No schedules available</Td>
+                                    </Tr>
+                                )
+                            ))}
+                        </tbody>
                     </Table>
                 </NotificationMiddle>
                 <NotificationBottom><ExitButton onClick={closeModal}>닫기</ExitButton></NotificationBottom>
