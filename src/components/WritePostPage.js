@@ -6,6 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
 import Nav from './Nav';
 
+
+// 배경
 const Center = styled.div`
     display: flex;
     justify-content: center;
@@ -22,8 +24,8 @@ const MainContainer = styled.div`
     margin: 15px;
 `;
 
-// 첫번째 컨테이너
-const FirstContainer = styled.div`
+// 내용 컨테이너
+const SectionContainer = styled.div`
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -125,13 +127,14 @@ const SubmitButton = styled.input`
 
 function WritePostPage() {
 
+    const navigate = useNavigate();
     const location = useLocation();
     const { state } = location;
     const club = state?.club || {};
-    const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const { user } = useUser();
+
 
     const currentTime = new Date();
     const offset = currentTime.getTimezoneOffset(); // UTC와의 차이를 분 단위로 반환
@@ -142,6 +145,8 @@ function WritePostPage() {
     // MySQL DATETIME 형식에 맞게 포맷팅
     const formattedTime = currentTime.toISOString().slice(0, 19).replace('T', ' ');
     
+
+
 
     const handleWritePost = async (event) => {
         event.preventDefault();
@@ -178,7 +183,7 @@ function WritePostPage() {
         <Center>
             <MainContainer>
                 <Nav />
-                <FirstContainer>
+                <SectionContainer>
                     <PostContainer>
                         <Post_UpContainer><Title>게시글 작성</Title></Post_UpContainer>
                         <Post_DownContainer>
@@ -207,7 +212,7 @@ function WritePostPage() {
                             </Form>
                         </Post_DownContainer>
                     </PostContainer>
-                </FirstContainer>
+                </SectionContainer>
                 <ToastContainer 
                     position='top-center'
                     hideProgressBar={true}          

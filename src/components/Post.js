@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Modal from 'react-modal';
 import { useLocation } from 'react-router-dom';
 import { useUser } from '../UserContext';
 import { toast, ToastContainer } from 'react-toastify';
@@ -7,6 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import styled from 'styled-components';
 import Nav from './Nav';
 
+
+// 배경
 const Center = styled.div`
     display: flex;
     justify-content: center;
@@ -209,12 +210,28 @@ function Post() {
     const [writter, setWritter] = useState('');
     const [commentWritters, setCommentWritters] = useState({});
     const [comments, setComments] = useState([]);
-    const [error, setError] = useState(null);
     const [content, setContent] = useState('');
     const { user } = useUser();
     const [dependency, setDependency] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
+    
+
     const commentsPerPage = 5;
+    const indexOfLastComment = currentPage * commentsPerPage;
+    const indexOfFirstComment = indexOfLastComment - commentsPerPage;
+    const currentComments = comments.slice(indexOfFirstComment, indexOfLastComment);
+    const totalPages = Math.ceil(comments.length / commentsPerPage);
+
+
+
+    const currentTime = new Date();
+    const offset = currentTime.getTimezoneOffset(); // UTC와의 차이를 분 단위로 반환
+
+    // 로컬 시간으로 변환
+    currentTime.setMinutes(currentTime.getMinutes() - offset);
+
+    // MySQL DATETIME 형식에 맞게 포맷팅
+    const formattedTime = currentTime.toISOString().slice(0, 19).replace('T', ' ');
 
 
 
@@ -234,15 +251,11 @@ function Post() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                setWritter(data.writter);
-                setError(null); 
-            } else {
-                setError('Failed to fetch writter.');
+                setWritter(data.writter); 
             }
         })
         .catch(error => {
             console.error('Error fetching writter:', error);
-            setError('Failed to fetch writter. Please try again.');
         });
     }, [post.UserID, dependency]);
 
@@ -265,15 +278,11 @@ function Post() {
         .then(data => {
             if (data.success) {
                 setComments(data.comments);
-                setError(null);
                 setCurrentPage(1);
-            } else {
-                setError('Failed to fetch comments.');
-            }
+            } 
         })
         .catch(error => {
             console.error('Error fetching comments:', error);
-            setError('Failed to fetch comments. Please try again.');
         });
     }, [post.PostID, dependency]);
 
@@ -314,15 +323,6 @@ function Post() {
         }
     }, [comments, dependency]);
 
-    const currentTime = new Date();
-    const offset = currentTime.getTimezoneOffset(); // UTC와의 차이를 분 단위로 반환
-
-    // 로컬 시간으로 변환
-    currentTime.setMinutes(currentTime.getMinutes() - offset);
-
-    // MySQL DATETIME 형식에 맞게 포맷팅
-    const formattedTime = currentTime.toISOString().slice(0, 19).replace('T', ' ');
-
 
 
     // 댓글 쓰기
@@ -359,10 +359,6 @@ function Post() {
         }
     };
 
-    const indexOfLastComment = currentPage * commentsPerPage;
-    const indexOfFirstComment = indexOfLastComment - commentsPerPage;
-    const currentComments = comments.slice(indexOfFirstComment, indexOfLastComment);
-    const totalPages = Math.ceil(comments.length / commentsPerPage);
 
     const formatDate = (isoDate) => {
         const date = new Date(isoDate);

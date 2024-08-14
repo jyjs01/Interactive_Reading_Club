@@ -7,6 +7,8 @@ import { useUser } from '../UserContext';
 import Nav from './Nav';
 import Footer from './Footer';
 
+
+// 배경
 const Center = styled.div`
     display: flex;
     justify-content: center;
@@ -29,8 +31,8 @@ const MainPicture = styled.img`
     height: 600px;
 `;
 
-// 첫번째 컨테이너
-const FirstContainer = styled.div`
+// 내용 컨테이너
+const SectionContainer = styled.div`
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -174,7 +176,7 @@ function EditBookClubPage() {
         <Center>
             <MainContainer>
                 <Nav />
-                <FirstContainer>
+                <SectionContainer>
                     <BookClubContainer>
                         <BookClub_UpContainer><Title>독서 클럽 수정</Title></BookClub_UpContainer>
                         <BookClub_DownContainer>
@@ -223,7 +225,7 @@ function EditBookClubPage() {
                             </Form>
                         </BookClub_DownContainer>
                     </BookClubContainer>
-                </FirstContainer>
+                </SectionContainer>
                 <Footer />
                 <ToastContainer 
                     position='top-center'

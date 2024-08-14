@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import Nav from './Nav';
 
 
+// 배경
 const Center = styled.div`
     display: flex;
     justify-content: center;
@@ -162,10 +163,16 @@ function BookClubListPage() {
 
     const [bookclubs, setBookclubs] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [error, setError] = useState(null);
-    const bookclubsPerPage = 5;
     const [selectedBookclub, setSelectedBookclub] = useState(null);
     const { user } = useUser();
+    
+
+    const bookclubsPerPage = 5;
+    const indexOfLastBook = currentPage * bookclubsPerPage;
+    const indexOfFirstBook = indexOfLastBook - bookclubsPerPage;
+    const currentBookClubs = bookclubs.slice(indexOfFirstBook, indexOfLastBook);
+    const totalPages = Math.ceil(bookclubs.length / bookclubsPerPage);
+
 
     useEffect(() => {
         fetch('http://localhost:4000/arrange_bookclub')
@@ -173,21 +180,15 @@ function BookClubListPage() {
             .then(data => {
                 if (data.success) {
                     setBookclubs(data.bookclubs);
-                    setError(null); // Clear previous errors
                     setCurrentPage(1);
                 }
             })
             .catch(error => {
                 console.error('Error fetching book clubs:', error);
-                setError('Failed to fetch bookclubs. Please try again.');
             });
     }, []);
 
-    const indexOfLastBook = currentPage * bookclubsPerPage;
-    const indexOfFirstBook = indexOfLastBook - bookclubsPerPage;
-    const currentBookClubs = bookclubs.slice(indexOfFirstBook, indexOfLastBook);
-    const totalPages = Math.ceil(bookclubs.length / bookclubsPerPage);
-
+    
     const handleBookClubClick = (club) => {
         setSelectedBookclub(club);
     };

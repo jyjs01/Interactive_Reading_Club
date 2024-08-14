@@ -4,6 +4,8 @@ import { useUser } from '../UserContext';
 import styled from 'styled-components';
 import Nav from './Nav';
 
+
+// 배경
 const Center = styled.div`
     display: flex;
     justify-content: center;
@@ -20,8 +22,8 @@ const MainContainer = styled.div`
     margin: 15px;
 `;
 
-// 첫번째 컨테이너
-const FirstContainer = styled.div`
+// 내용 컨테이너
+const SectionContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -163,16 +165,23 @@ const PaginationButton = styled.button`
 `;
 
 function BookClubPage() {
+
+    const navigate = useNavigate();
     const location = useLocation();
     const { state } = location;
     const club = state?.club || {};
-    const [post, setPost] = useState([]);
     const [posts, setPosts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [error, setError] = useState(null);
-    const [writter, setWritter] = useState('');
+    
+    
     const postsPerPage = 6;
-    const { user } = useUser();
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = Array.isArray(posts) ? posts.slice(indexOfFirstPost, indexOfLastPost) : [];
+    const totalPages = Array.isArray(posts) ? Math.ceil(posts.length / postsPerPage) : 0;
+
+
 
     useEffect(() => {
         const fetchPostsAndWritters = async () => {
@@ -208,14 +217,13 @@ function BookClubPage() {
                         }
                     }));
                     setPosts(postsWithWritters);
-                    setError(null); // Clear previous errors
                     setCurrentPage(1);
                 } else {
                     setError(postData.message || 'Failed to fetch Posts. Please try again.');
+                    console.error(error);
                 }
             } catch (error) {
                 console.error('Error fetching Posts:', error);
-                setError('Failed to fetch Posts. Please try again.');
             }
         };
 
@@ -223,19 +231,15 @@ function BookClubPage() {
     }, [club.ClubID]);
 
 
-    const indexOfLastPost = currentPage * postsPerPage;
-    const indexOfFirstPost = indexOfLastPost - postsPerPage;
-    const currentPosts = Array.isArray(posts) ? posts.slice(indexOfFirstPost, indexOfLastPost) : [];
-    const totalPages = Array.isArray(posts) ? Math.ceil(posts.length / postsPerPage) : 0;
-
-    const navigate = useNavigate();
     const GotoPost = (post) => { 
         navigate(`/post/${post.Title}`, {state: {club, post}});
     };
 
+
     const GotoWrite = () => {
         navigate('/write_post', {state: {club}});
     };
+
 
     const formatDate = (isoDate) => {
         const date = new Date(isoDate);
@@ -253,7 +257,7 @@ function BookClubPage() {
         <Center>
             <MainContainer>
                 <Nav />
-                <FirstContainer>
+                <SectionContainer>
                     <BookInfoContainer>
                         <BookClubInfoContainer>
                             <InfoTop><BookImg src={club.ImageURL} alt='book image' /></InfoTop>
@@ -291,7 +295,7 @@ function BookClubPage() {
                             ))}
                         </PaginationContainer>
                     </PostContainer>
-                </FirstContainer>
+                </SectionContainer>
                 <ButtonContainer>
                     <Button onClick={GotoWrite}>게시글 작성</Button>
                 </ButtonContainer>

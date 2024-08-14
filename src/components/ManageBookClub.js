@@ -8,6 +8,8 @@ import styled from 'styled-components';
 import Nav from './Nav';
 import Footer from './Footer';
 
+
+// 배경
 const Center = styled.div`
     display: flex;
     justify-content: center;
@@ -30,8 +32,8 @@ const MainPicture = styled.img`
     height: 600px;
 `;
 
-// 첫번째 컨테이너
-const FirstContainer = styled.div`
+// 내용 컨테이너
+const SectionContainer = styled.div`
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -121,12 +123,6 @@ const Description = styled.h3`
     font-family: "Inter";
     margin-left: ${(props) => props.id === 'modal' ? '0px' : '20px'};
     word-wrap: break-word;
-`;
-
-// Date
-const Date = styled.h3`
-    font-family: "Inter";
-    margin-left: 20px;
 `;
 
 // 버튼 컨테이너
@@ -228,13 +224,21 @@ const ModalButton = styled.button`
 
 function ManageBookClub() {
 
+    const navigate = useNavigate();
+    const { user } = useUser();
     const [bookclubs, setBookclubs] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [error, setError] = useState(null);
-    const bookclubsPerPage = 3;
     const [selectedBookclub, setSelectedBookclub] = useState(null);
     const [dependency, setDependency] = useState(0);
-    const { user } = useUser();
+    
+
+    const bookclubsPerPage = 3;
+    const indexOfLastBook = currentPage * bookclubsPerPage;
+    const indexOfFirstBook = indexOfLastBook - bookclubsPerPage;
+    const currentBookClubs = bookclubs.slice(indexOfFirstBook, indexOfLastBook);
+    const totalPages = Math.ceil(bookclubs.length / bookclubsPerPage);
+
+
 
     useEffect(() => {
         fetch('http://localhost:4000/arrange_mybookclub', {
@@ -250,20 +254,14 @@ function ManageBookClub() {
             .then(data => {
                 if (data.success) {
                     setBookclubs(data.bookclubs);
-                    setError(null); // Clear previous errors
                     setCurrentPage(1);
                 }
             })
             .catch(error => {
                 console.error('Error fetching book clubs:', error);
-                setError('Failed to fetch bookclubs. Please try again.');
             });
     }, [dependency]);
 
-    const indexOfLastBook = currentPage * bookclubsPerPage;
-    const indexOfFirstBook = indexOfLastBook - bookclubsPerPage;
-    const currentBookClubs = bookclubs.slice(indexOfFirstBook, indexOfLastBook);
-    const totalPages = Math.ceil(bookclubs.length / bookclubsPerPage);
 
     const handleCloseModal = () => {
         setSelectedBookclub(null);
@@ -297,24 +295,22 @@ function ManageBookClub() {
             console.error(error);
             toast.error('오류가 발생했습니다.');
         }
-    }
-
-    const navigate = useNavigate();
+    };
 
     const GotoEdit = (club) => {
         navigate(`/edit_bookclub/${club.ClubName}`, {state: {club}});
-    }
+    };
 
     const GotoBookClub = (club) => {
         navigate(`/bookclub/${club.ClubName}`, { state: { club }});
-    }
+    };
 
     return (
         <Center>
             <MainContainer>
                 <Nav />
                 <MainPicture src='./mainthema.jpg' alt='mainthema' />
-                <FirstContainer>
+                <SectionContainer>
                     <BookClubContainer>
                         <BookClub_UpContainer>
                             <Title>독서 클럽 관리</Title>
@@ -348,7 +344,7 @@ function ManageBookClub() {
                             ))}
                         </PaginationContainer>
                     </BookClubContainer>
-                </FirstContainer>
+                </SectionContainer>
                 <Footer />
 
                 <Modal
