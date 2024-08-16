@@ -22,7 +22,6 @@ const AddBook = require('./api/AddBookAPI');
 // 서버 생성
 let app = http.createServer((request,response)=>{
     let _url = request.url;
-    let queryData = url.parse(_url, true).query;
     let pathname = url.parse(_url, true).pathname;
 
 
